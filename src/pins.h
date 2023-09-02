@@ -7,6 +7,8 @@
 /*
     Currently Free:
     D2
+    D4
+    D5
     A5
     A6
     A7
@@ -19,9 +21,6 @@
 #define serialTX D1
 
 #define pinRangeSwitch D3
-
-#define pinSDA D4
-#define pinSCL D5
 
 #define pinNTC A0
 
