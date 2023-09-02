@@ -1,7 +1,26 @@
 #include "display.h"
 #include "cooling.h"
 
-void configureDisplay() {}
+HardwareSerial displaySerial(displaySerialRX, displaySerialTX);
+bool displayMode = DISPLAY_MODE_VALUE;
+uint8_t selectedDigit = 0;
+
+void configureDisplay() {
+
+  displaySerial.setTimeout(200);
+  displaySerial.begin(115200);
+  displaySerial.write('s');
+  displaySerial.write('-');
+
+}
+
+void setDisplayMode(bool mode) {
+  displayMode = mode;
+}
+
+bool getDisplayMode() {
+  return displayMode;
+}
 
 void handleDisplay() {
 
@@ -18,6 +37,9 @@ void serialDisplay() {
 
   Serial.print("NTC: ");
   Serial.print(getNTCValue());
+
+  displaySerial.write('v');
+  displaySerial.print(getNTCValue());
 
   if (getFanState()) {
     Serial.print("     PWM: ");
