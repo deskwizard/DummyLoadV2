@@ -1,5 +1,6 @@
 #include "control.h"
 #include "cooling.h"
+#include "display.h"
 
 bool alarmTriggeredFlag = false;
 bool outputEnabled = false;
@@ -34,6 +35,9 @@ void setAlarm(uint8_t alarmType) {
   // No matter what, turn output off, set fan to max speed
   setOutputState(OUTPUT_OFF);
   setFanSpeed(fanMaxPWM);
+
+  displayAlarmSet(alarmType);
+
   Serial.print("********** ALARM: ");
 
   if (alarmType == ALARM_FAN_FAIL) {
@@ -48,6 +52,7 @@ void setAlarm(uint8_t alarmType) {
 
 void clearAlarm() {
   alarmTriggeredFlag = false;
+  displayAlarmClear();
   digitalWrite(pinDebugLED, LOW);
   Serial.println("********** Alarm(s) Cleared **********");
 }

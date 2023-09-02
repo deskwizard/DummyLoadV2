@@ -13,6 +13,8 @@ void setDisplayMode(bool mode);
 bool getDisplayMode();
 void selectSetDigit(uint8_t digit);
 uint8_t getSelectedDigit();
+void displayAlarmSet(uint8_t error);
+void displayAlarmClear();
 
 void handleDisplay();
 void serialDisplay();

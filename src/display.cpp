@@ -61,5 +61,14 @@ void serialDisplay() {
   // Serial.print("RPM: ");
   // Serial.println(getFanRPM());
   // Serial.println();
-  
+
+}
+
+void displayAlarmSet(uint8_t error) {
+  displaySerial.write('E');
+  displaySerial.print(error);
+}
+
+void displayAlarmClear() {
+  displaySerial.write('e');
 }
