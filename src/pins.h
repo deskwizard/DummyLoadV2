@@ -6,21 +6,15 @@
 
 /*
     Currently Free:
-    D2
-    D4
-    D5
-    A5
-    A6
-    A7
-
-    Needed:
-        - Range switch input ?
+        D4      * Reserved for display
+        D5      * Reserved for display
+        D10
+        A4
+        A5
+        A6
+        A7
 */
 
-#define serialRX D0
-#define serialTX D1
-
-#define pinRangeSwitch D3
 
 #define pinNTC A0
 
@@ -28,16 +22,21 @@
 #define pinOutputEnable A2
 #define pinDacOutput A3
 
+#define pinEncoderA D0
+#define pinEncoderB D1
+#define pinEncoderSwitch D2
+
+#define pinRangeSwitch D3
+
 #define pinFanEnable D6
 #define pinFanPWM D7
 #define pinFanTach D8
 
 #define pinEnableSwitch D9
 
-#define pinEncoderSwitch D10
-#define pinEncoderA D11
-#define pinEncoderB D12
+#define pinDebugLED D11
 
-#define pinDebugLED D13
+#define debugSerialRX D12
+#define debugSerialTX D13
 
 #endif

@@ -31,8 +31,8 @@ extern bool rampDir;
 
 void setup() {
 
-  Serial.setRx(serialRX);
-  Serial.setTx(serialTX);
+  Serial.setRx(debugSerialRX);
+  Serial.setTx(debugSerialTX);
   Serial.setTimeout(200);
   Serial.begin(115200);
   delay(2000);
@@ -128,8 +128,8 @@ void flashDebugLED() {
 
   if ((uint32_t)(currentMillis - previousMillis) >= debugLedFlashInterval) {
 
-    // ledState = !ledState;
-    // digitalWrite(pinDebugLED, ledState);
+     ledState = !ledState;
+     digitalWrite(pinDebugLED, ledState);
 
     previousMillis = currentMillis;
   }
