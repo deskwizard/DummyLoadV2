@@ -15,6 +15,8 @@ uint8_t lastEncoderPosition = 0;
 volatile bool encoderSwitchState;
 bool encoderSwitchLastState;
 
+const uint16_t encoderStep[4] = {1000, 100, 10, 1};
+
 extern uint16_t outputValueDAC;
 
 void configureInputs() {
@@ -58,22 +60,31 @@ void handleInputs() {
 
     if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
       Serial.println("Encoder +");
-      if (outputValueDAC >= maxDAC) {
-        outputValueDAC = maxDAC;
-      } else {
-        outputValueDAC = outputValueDAC + ENCODER_STEP;
-      }
 
+      if (getDisplayMode() == DISPLAY_MODE_SET) {
+
+        if (outputValueDAC >= maxDAC) {
+          outputValueDAC = maxDAC;
+        } else {
+          // Here
+          outputValueDAC = outputValueDAC + encoderStep[getSelectedDigit()];
+        }
+        setDAC(outputValueDAC);
+      }
     } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
-      Serial.print("Encoder -   ");
-      if (outputValueDAC == 0) {
-        outputValueDAC = 0;
-      } else {
-        outputValueDAC = outputValueDAC - ENCODER_STEP;
+      Serial.println("Encoder -");
+
+      if (getDisplayMode() == DISPLAY_MODE_SET) {
+        if (outputValueDAC == 0) {
+          outputValueDAC = 0;
+        } else {
+          outputValueDAC = outputValueDAC - encoderStep[getSelectedDigit()];
+        }
+        setDAC(outputValueDAC);
+        
       }
     }
 
-    setDAC(outputValueDAC);
     lastEncoderPosition = currentEncoderPosition;
   }
 

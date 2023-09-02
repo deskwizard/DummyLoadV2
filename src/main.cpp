@@ -61,7 +61,7 @@ void loop() {
   handleDisplay();
   handleSerialInput();
 
-  flashDebugLED();
+  // flashDebugLED();
 }
 
 void handleSerialInput() {

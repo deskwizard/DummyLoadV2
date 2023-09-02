@@ -20,5 +20,6 @@ bool getAlarmFlag();
 void clearAlarm();
 
 void setDAC(uint16_t value);
+uint16_t getValueDAC();
 
 #endif

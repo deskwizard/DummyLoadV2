@@ -69,3 +69,5 @@ void setDAC(uint16_t value) {
   Serial.print("DAC output: ");
   Serial.println(outputValueDAC);
 }
+
+uint16_t getValueDAC() { return outputValueDAC; }

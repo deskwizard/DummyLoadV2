@@ -33,24 +33,40 @@ void selectSetDigit(uint8_t digit) {
 
 uint8_t getSelectedDigit() { return selectedDigit; }
 
+void updateDisplay() {
+  displaySerial.write('v');
+
+  if (getDisplayMode() == DISPLAY_MODE_SET) {
+    displaySerial.print(getValueDAC());
+  } else {
+    displaySerial.print(getNTCValue());
+  }
+}
+
 void handleDisplay() {
 
   uint32_t currentMillis = millis();
   static uint32_t previousMillis = 0;
 
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
+    updateDisplay();
     serialDisplay();
     previousMillis = currentMillis;
   }
 }
 
+void displayAlarmSet(uint8_t error) {
+  displaySerial.write('E');
+  displaySerial.print(error);
+}
+
+void displayAlarmClear() { displaySerial.write('e'); }
+
 void serialDisplay() {
 
-  // Serial.print("NTC: ");
-  // Serial.print(getNTCValue());
-
-  displaySerial.write('v');
-  displaySerial.print(getNTCValue());
+  Serial.print("NTC: ");
+  Serial.print(getNTCValue());
+  Serial.println();
 
   if (getFanState()) {
     Serial.print("     PWM: ");
@@ -61,14 +77,4 @@ void serialDisplay() {
   // Serial.print("RPM: ");
   // Serial.println(getFanRPM());
   // Serial.println();
-
-}
-
-void displayAlarmSet(uint8_t error) {
-  displaySerial.write('E');
-  displaySerial.print(error);
-}
-
-void displayAlarmClear() {
-  displaySerial.write('e');
 }

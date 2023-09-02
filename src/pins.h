@@ -6,8 +6,6 @@
 
 /*
     Currently Free:
-        D4      * Reserved for display
-        D5      * Reserved for display
         D10
         A4
         A5
