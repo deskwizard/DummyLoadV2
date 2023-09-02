@@ -11,6 +11,8 @@
 void configureDisplay();
 void setDisplayMode(bool mode);
 bool getDisplayMode();
+void selectSetDigit(uint8_t digit);
+uint8_t getSelectedDigit();
 
 void handleDisplay();
 void serialDisplay();

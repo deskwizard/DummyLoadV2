@@ -11,16 +11,27 @@ void configureDisplay() {
   displaySerial.begin(115200);
   displaySerial.write('s');
   displaySerial.write('-');
-
+  displaySerial.write('z');
 }
 
 void setDisplayMode(bool mode) {
   displayMode = mode;
+  if (displayMode == DISPLAY_MODE_VALUE) {
+    displaySerial.write('z');
+  }
 }
 
-bool getDisplayMode() {
-  return displayMode;
+bool getDisplayMode() { return displayMode; }
+
+void selectSetDigit(uint8_t digit) {
+  selectedDigit = digit;
+  Serial.print("selected digit: ");
+  Serial.println(selectedDigit);
+  displaySerial.write('d');
+  displaySerial.print(digit);
 }
+
+uint8_t getSelectedDigit() { return selectedDigit; }
 
 void handleDisplay() {
 
@@ -35,8 +46,8 @@ void handleDisplay() {
 
 void serialDisplay() {
 
-  Serial.print("NTC: ");
-  Serial.print(getNTCValue());
+  // Serial.print("NTC: ");
+  // Serial.print(getNTCValue());
 
   displaySerial.write('v');
   displaySerial.print(getNTCValue());
@@ -46,10 +57,9 @@ void serialDisplay() {
     Serial.print(getFanPWM());
   }
 
-  Serial.println();
-
+  // Serial.println();
   // Serial.print("RPM: ");
   // Serial.println(getFanRPM());
-
-  Serial.println();
+  // Serial.println();
+  
 }
