@@ -11,10 +11,8 @@ void configureControls() {
 
   pinMode(pinDacOutput, OUTPUT);
   pinMode(pinOutputEnable, OUTPUT);
-  pinMode(pinOutputStateLED, OUTPUT);
   digitalWrite(pinOutputEnable, LOW);
   digitalWrite(pinDacOutput, LOW);
-  digitalWrite(pinOutputStateLED, LOW);
 
   setDAC(outputValueDAC);
   Serial.print("DAC output: ");
@@ -23,7 +21,6 @@ void configureControls() {
 
 void setOutputState(bool state) {
   digitalWrite(pinOutputEnable, state);
-  digitalWrite(pinOutputStateLED, state);
   outputEnabled = state;
 }
 
