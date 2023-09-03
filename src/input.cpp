@@ -61,7 +61,7 @@ void handleInputs() {
     if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
       Serial.println("Encoder +");
 
-      if (getDisplayMode() == DISPLAY_MODE_SET && getAlarmFlag()) {
+      if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
 
         if (outputValueDAC >= maxDAC) {
           outputValueDAC = maxDAC;
@@ -74,7 +74,7 @@ void handleInputs() {
     } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
       Serial.println("Encoder -");
 
-      if (getDisplayMode() == DISPLAY_MODE_SET) {
+      if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
         if (outputValueDAC == 0) {
           outputValueDAC = 0;
         } else {

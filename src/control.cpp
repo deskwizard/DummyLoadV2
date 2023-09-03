@@ -5,7 +5,7 @@
 bool alarmTriggeredFlag = false;
 bool outputEnabled = false;
 
-uint16_t outputValueDAC = 1890;
+uint16_t outputValueDAC = 1234;
 
 void configureControls() {
 

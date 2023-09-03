@@ -10,9 +10,12 @@
   - Live Current ADC reading (will need hardware change)
   - Fan tach reading is fine at RPM min/max but not at intermediate speed
   - setDAC is called 3 times per encoder step
-  - Mapping from NTC value top PWM value feels dodgy (starts 2000 for reasons)
+  - Mapping from NTC value top PWM value feels dodgy
+          -> It underflows before the specified value ("Fixed")
           -> It's mapping from 2550 or w/e instead of 2600 for some reason??
   - Output enable switch debounce (switch dependant...)
+  - Fan PWM output will need evening out, do smoothing on the mapped PWM values?
+  - NTC value to fan pwm map() is dodgy as f..k.
 
 */
 
