@@ -168,10 +168,15 @@ void oneSecondTimerInterrupt() {
   // TODO: Over here
   uint16_t value = tempRunningTotal / dataPointCount;
   if (fanEnabled && (value >= fanEnableThreshold) && !getAlarmFlag()) {
-    uint16_t mapped =
+    int16_t mapped =
         map(value, fanEnableThreshold, 2800, fanMinPWM, fanMaxPWM);
     // Serial.print("Mapped: ");
     // Serial.println(mapped);
+
+    if (mapped < fanMaxPWM) {
+      mapped = fanMaxPWM;
+    }
+
     setFanSpeed(mapped);
   }
 }

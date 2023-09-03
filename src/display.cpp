@@ -12,6 +12,7 @@ void configureDisplay() {
   displaySerial.write('s');
   displaySerial.write('-');
   displaySerial.write('z');
+  displaySerial.write('e'); 
 }
 
 void setDisplayMode(bool mode) {
@@ -49,7 +50,9 @@ void handleDisplay() {
   static uint32_t previousMillis = 0;
 
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
-    updateDisplay();
+    if (!getAlarmFlag()) {
+      updateDisplay();
+    }
     serialDisplay();
     previousMillis = currentMillis;
   }
@@ -66,13 +69,14 @@ void serialDisplay() {
 
   Serial.print("NTC: ");
   Serial.print(getNTCValue());
-  Serial.println();
 
   if (getFanState()) {
     Serial.print("     PWM: ");
     Serial.print(getFanPWM());
+    Serial.print(" ");
   }
 
+  Serial.println();
   // Serial.println();
   // Serial.print("RPM: ");
   // Serial.println(getFanRPM());

@@ -61,7 +61,7 @@ void handleInputs() {
     if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
       Serial.println("Encoder +");
 
-      if (getDisplayMode() == DISPLAY_MODE_SET) {
+      if (getDisplayMode() == DISPLAY_MODE_SET && getAlarmFlag()) {
 
         if (outputValueDAC >= maxDAC) {
           outputValueDAC = maxDAC;
@@ -81,7 +81,6 @@ void handleInputs() {
           outputValueDAC = outputValueDAC - encoderStep[getSelectedDigit()];
         }
         setDAC(outputValueDAC);
-        
       }
     }
 
@@ -96,9 +95,12 @@ void handleInputs() {
     static uint8_t counter = 3; // For rollover purposes
 
     if (encoderSwitchState == EN_SW_DOWN) {
+
       if (getAlarmFlag()) {
         clearAlarm();
+        return;
       }
+
       if (getDisplayMode() == DISPLAY_MODE_VALUE) {
         setDisplayMode(DISPLAY_MODE_SET);
         counter = 3;
@@ -113,7 +115,6 @@ void handleInputs() {
           counter--;
         }
 
-        // selectSetDigit(counter);
       }
     }
   }
