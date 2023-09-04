@@ -70,9 +70,11 @@ void serialDisplay() {
   Serial.print("NTC: ");
   Serial.print(getNTCValue());
 
+  // Serial.print("      Current: ");
+  // Serial.print(getCurrentValue());
+  float voltage = getCurrentValue() * (3.3 / 4095.0);
   Serial.print("      Current: ");
-  Serial.print(getCurrentValue());
-  
+  Serial.print(voltage, 3);
 
   if (getFanState()) {
     Serial.print("     PWM: ");
