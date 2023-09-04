@@ -30,6 +30,7 @@ void setFanSpeed(uint16_t value);
 bool getFanState();
 uint16_t getFanRPM();
 uint16_t getFanPWM();
+void adjustFan();
 void oneSecondTimerInterrupt();
 void fanTachInterruptHandler();
 

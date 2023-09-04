@@ -29,7 +29,6 @@
 
 void flashDebugLED();
 void handleSerialInput();
-void scanI2C();
 
 extern bool rampDir;
 
@@ -65,7 +64,7 @@ void loop() {
   handleDisplay();
   handleSerialInput();
 
-  // flashDebugLED();
+  // flashDebugLED();  // it's on the 1sec timer
 }
 
 void handleSerialInput() {

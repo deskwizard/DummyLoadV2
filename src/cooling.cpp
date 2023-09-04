@@ -24,8 +24,8 @@ void configureCooling() {
   analogWrite(pinFanPWM, fanPWM);
   digitalWrite(pinFanEnable, LOW);
 
-  attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
-                  RISING);
+  //attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
+  //                RISING);
 
   // Configure fanTachTimer (math is all wrong, freq. is correct-ish...)
   fanTachTimer.setPrescaleFactor(
@@ -42,26 +42,27 @@ void configureCooling() {
 
 void handleCooling() {
 
-  uint32_t currentMillis = millis();
-  static uint32_t previousMillis = 0;
+  adjustFan();
+  /*
+    uint32_t currentMillis = millis();
+    static uint32_t previousMillis = 0;
 
-  if ((uint32_t)(currentMillis - previousMillis) >= tempReadInterval) {
+    if ((uint32_t)(currentMillis - previousMillis) >= tempReadInterval) {
+  */
+  readNTC();
+  /*
+      if (fanControlMode) {
+        // do nothing... I'm sure there's a smarter way, tbd.
+      } else if (!fanEnabled &&
+                 (getNTCValue() > (fanEnableThreshold + fanThresholdDeadband)))
+     { setFanState(true); } else if (fanEnabled && (getNTCValue() <
+     (fanEnableThreshold - (fanThresholdDeadband * 2)))) {
 
-    readNTC();
-
-    if (fanControlMode) {
-      // do nothing... I'm sure there's a smarter way, tbd.
-    } else if (!fanEnabled &&
-               (getNTCValue() > (fanEnableThreshold + fanThresholdDeadband))) {
-      setFanState(true);
-    } else if (fanEnabled && (getNTCValue() < (fanEnableThreshold -
-                                               (fanThresholdDeadband * 2)))) {
-
-      setFanState(false);
-    }
-
-    previousMillis = currentMillis;
-  }
+        setFanState(false);
+      }
+  */
+  // previousMillis = currentMillis;
+  // }
 
   /*
   // PWM Auto ramp debug
@@ -90,25 +91,50 @@ void handleCooling() {
     } */
 }
 
+void adjustFan() {
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = 0;
+
+  if ((uint32_t)(currentMillis - previousMillis) >= 5000) {
+
+    if (fanControlMode) {
+      // do nothing... I'm sure there's a smarter way, tbd.
+    } else if (!fanEnabled &&
+               (getNTCValue() > (fanEnableThreshold + fanThresholdDeadband))) {
+      setFanState(true);
+    } else if (fanEnabled && (getNTCValue() < (fanEnableThreshold -
+                                               (fanThresholdDeadband * 2)))) {
+
+      setFanState(false);
+    }
+
+    previousMillis = currentMillis;
+  }
+}
 // ******************************* NTC *******************************
 
 void readNTC() {
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = 0;
 
-  // Subtract the last reading
-  tempRunningTotal = tempRunningTotal - tempReadings[tempReadIndex];
+  if ((uint32_t)(currentMillis - previousMillis) >= tempReadInterval) {
+    // Subtract the last reading
+    tempRunningTotal = tempRunningTotal - tempReadings[tempReadIndex];
 
-  // Read from the sensor
-  tempReadings[tempReadIndex] = analogRead(pinNTC);
+    // Read from the sensor
+    tempReadings[tempReadIndex] = analogRead(pinNTC);
 
-  // Add the reading to the tempRunningTotal
-  tempRunningTotal = tempRunningTotal + tempReadings[tempReadIndex];
+    // Add the reading to the tempRunningTotal
+    tempRunningTotal = tempRunningTotal + tempReadings[tempReadIndex];
 
-  // Advance to the next position in the array
-  tempReadIndex = tempReadIndex + 1;
+    // Advance to the next position in the array
+    tempReadIndex = tempReadIndex + 1;
 
-  // If we're at the end of the array, wrap around to the beginning
-  if (tempReadIndex >= dataPointCount) {
-    tempReadIndex = 0;
+    // If we're at the end of the array, wrap around to the beginning
+    if (tempReadIndex >= dataPointCount) {
+      tempReadIndex = 0;
+    }
+    previousMillis = currentMillis;
   }
 }
 
@@ -158,7 +184,7 @@ void oneSecondTimerInterrupt() {
   tachPulseCount = 0;
 
   if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-    setAlarm(ALARM_FAN_FAIL);
+    //setAlarm(ALARM_FAN_FAIL);
   }
 
   if (getOutputState() && getNTCValue() >= NTC_OT_THRESHOLD) {
@@ -167,8 +193,7 @@ void oneSecondTimerInterrupt() {
 
   uint16_t value = tempRunningTotal / dataPointCount;
   if (fanEnabled && (value >= fanEnableThreshold) && !getAlarmFlag()) {
-    int16_t mapped =
-        map(value, fanEnableThreshold, 2800, fanMinPWM, fanMaxPWM);
+    int16_t mapped = map(value, fanEnableThreshold, 2800, fanMinPWM, fanMaxPWM);
     // Serial.print("Mapped: ");
     // Serial.println(mapped);
 
