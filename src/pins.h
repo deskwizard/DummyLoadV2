@@ -24,7 +24,6 @@
 #define displaySerialTX D5
 
 #define pinFanEnable D6
-#define pinFanPWM D7
 #define pinFanTach D8
 
 #define pinEnableSwitch D9
@@ -34,7 +33,6 @@
 #define debugSerialRX D12
 #define debugSerialTX D13
 
-#define pinNTC A2
 #define pinOutputEnable A7
 #define pinDacOutput A3
 #define pinCurrentADC A0

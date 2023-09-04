@@ -4,16 +4,16 @@
 
 HardwareTimer controlTimer(HW_TIMER_CONTROL);
 
-#define dataPointCount 50
+#define currentDataPointCount 50
 
 bool alarmTriggeredFlag = false;
 bool outputEnabled = false;
 
-uint16_t currentReadings[dataPointCount] = {0};
+uint16_t currentReadings[currentDataPointCount] = {0};
 uint8_t currentReadIndex = 0;
 uint64_t currentRunningTotal = 0;
 
-uint16_t outputValueDAC = 0;
+uint16_t outputValueDAC = 2000;
 
 void controlTimerInterrupt() { readCurrent(); }
 
@@ -56,7 +56,6 @@ void setAlarm(uint8_t alarmType) {
 
   // No matter what, turn output off, set fan to max speed
   setOutputState(OUTPUT_OFF);
-  setFanSpeed(fanMaxPWM);
 
   displayAlarmSet(alarmType);
 
@@ -100,6 +99,7 @@ void readCurrent() {
   currentRunningTotal = currentRunningTotal - currentReadings[currentReadIndex];
 
   // Read from the sensor
+  //*********************************** here
   currentReadings[currentReadIndex] = analogRead(pinCurrentADC);
 
   // Add the reading to the tempRunningTotal
@@ -109,8 +109,8 @@ void readCurrent() {
   currentReadIndex = currentReadIndex + 1;
 
   // If we're at the end of the array, wrap around to the beginning
-  if (currentReadIndex >= dataPointCount) {
+  if (currentReadIndex >= currentDataPointCount) {
     currentReadIndex = 0;
   }
 }
-uint16_t getCurrentValue() { return currentRunningTotal / dataPointCount; }
+uint16_t getCurrentValue() { return currentRunningTotal / currentDataPointCount; }

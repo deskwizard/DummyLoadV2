@@ -7,16 +7,16 @@
 
   Todo:
   - Some way to make the DAC outputs "even"
-  - Live Current ADC reading (will need hardware change)
   - Fan tach reading is fine at RPM min/max but not at intermediate speed
   - setDAC is called 3 times per encoder step
   - Mapping from NTC value top PWM value feels dodgy
           -> It underflows before the specified value ("Fixed")
           -> It's mapping from 2550 or w/e instead of 2600 for some reason??
+          -> We don't need to update the fan speed every second ...
   - Output enable switch debounce (switch dependant...)
   - Fan PWM output will need evening out, do smoothing on the mapped PWM values?
   - NTC value to fan pwm map() is dodgy as f..k
-          -> We don't need to update the fan speed every second ...
+
 
 */
 
@@ -59,7 +59,6 @@ void setup() {
 
 void loop() {
 
-  handleCooling();
   handleInputs();
   handleDisplay();
   handleSerialInput();
@@ -79,23 +78,6 @@ void handleSerialInput() {
       readValue = Serial.parseInt();
       Serial.print("d: ");
       Serial.println(readValue);
-      break;
-
-      // TODO: Those two cases feel fishy and need a cleanup
-    case '+':
-      if (getFanPWM() == 0) {
-        setFanSpeed(fanMinPWM);
-      } else {
-        setFanSpeed(getFanPWM() - 200);
-      }
-      break;
-
-    case '-':
-      if (getFanPWM() >= 4000) {
-        setFanSpeed(fanMaxPWM);
-      } else {
-        setFanSpeed(getFanPWM() + 200);
-      }
       break;
 
     case 'f':
