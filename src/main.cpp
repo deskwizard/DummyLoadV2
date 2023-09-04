@@ -15,7 +15,8 @@
           -> It's mapping from 2550 or w/e instead of 2600 for some reason??
   - Output enable switch debounce (switch dependant...)
   - Fan PWM output will need evening out, do smoothing on the mapped PWM values?
-  - NTC value to fan pwm map() is dodgy as f..k.
+  - NTC value to fan pwm map() is dodgy as f..k
+          -> We don't need to update the fan speed every second ...
 
 */
 

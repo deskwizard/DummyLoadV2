@@ -13,7 +13,7 @@ uint16_t currentReadings[dataPointCount] = {0};
 uint8_t currentReadIndex = 0;
 uint64_t currentRunningTotal = 0;
 
-uint16_t outputValueDAC = 1234;
+uint16_t outputValueDAC = 0;
 
 void controlTimerInterrupt() { readCurrent(); }
 
@@ -114,4 +114,3 @@ void readCurrent() {
   }
 }
 uint16_t getCurrentValue() { return currentRunningTotal / dataPointCount; }
-//uint16_t getCurrentValue() { return analogRead(pinCurrentADC); }

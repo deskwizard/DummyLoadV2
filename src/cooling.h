@@ -11,8 +11,7 @@
 
 #define tempReadInterval 5
 #define dataPointCount 50
-//#define NTC_OT_THRESHOLD 2900
-#define NTC_OT_THRESHOLD 4096
+#define NTC_OT_THRESHOLD 2900
 
 
 #define FAN_CTRL_AUTO 0
