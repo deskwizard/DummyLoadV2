@@ -12,7 +12,7 @@ void configureDisplay() {
   displaySerial.write('s');
   displaySerial.write('-');
   displaySerial.write('z');
-  displaySerial.write('e'); 
+  displaySerial.write('e');
 }
 
 void setDisplayMode(bool mode) {
@@ -40,7 +40,7 @@ void updateDisplay() {
   if (getDisplayMode() == DISPLAY_MODE_SET) {
     displaySerial.print(getValueDAC());
   } else {
-    displaySerial.print(getNTCValue());
+    displaySerial.print(getCurrentValue());
   }
 }
 
@@ -69,6 +69,10 @@ void serialDisplay() {
 
   Serial.print("NTC: ");
   Serial.print(getNTCValue());
+
+  Serial.print("      Current: ");
+  Serial.print(getCurrentValue());
+  
 
   if (getFanState()) {
     Serial.print("     PWM: ");

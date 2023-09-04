@@ -21,5 +21,7 @@ void clearAlarm();
 
 void setDAC(uint16_t value);
 uint16_t getValueDAC();
+uint16_t getCurrentValue();
+void readCurrent();
 
 #endif

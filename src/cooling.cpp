@@ -1,6 +1,6 @@
 #include "cooling.h"
 
-HardwareTimer fanTachTimer(HW_TIMER_1SEC);
+HardwareTimer fanTachTimer(HW_TIMER_COOLING);
 
 uint16_t tempReadings[dataPointCount] = {0};
 uint8_t tempReadIndex = 0;
@@ -165,7 +165,6 @@ void oneSecondTimerInterrupt() {
     setAlarm(ALARM_OVER_TEMP);
   }
 
-  // TODO: Over here
   uint16_t value = tempRunningTotal / dataPointCount;
   if (fanEnabled && (value >= fanEnableThreshold) && !getAlarmFlag()) {
     int16_t mapped =

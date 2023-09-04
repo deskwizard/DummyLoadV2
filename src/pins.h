@@ -8,7 +8,6 @@
     Currently Free:
         D10
         A1
-        A4
         A5
         A6
         A7
@@ -35,8 +34,9 @@
 #define debugSerialRX D12
 #define debugSerialTX D13
 
-#define pinNTC A0
-#define pinOutputEnable A2
+#define pinNTC A2
+#define pinOutputEnable A7
 #define pinDacOutput A3
+#define pinCurrentADC A0
 
 #endif
