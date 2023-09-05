@@ -40,7 +40,13 @@ void updateDisplay() {
   if (getDisplayMode() == DISPLAY_MODE_SET) {
     displaySerial.print(getValueDAC());
   } else {
-    displaySerial.print(getCurrentValue());
+    // displaySerial.print(getCurrentValue());
+    if (getOutputState()) {
+      uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) * 1000);
+      displaySerial.print(voltage);
+    } else {
+      displaySerial.print(0);
+    }
   }
 }
 
@@ -67,18 +73,18 @@ void displayAlarmClear() { displaySerial.write('e'); }
 
 void serialDisplay() {
 
-   Serial.print("      Current: ");
-   Serial.print(getCurrentValue());
-  //float voltage = getCurrentValue() * (3.3 / 4095.0);
-  //Serial.print("      Current: ");
-  //Serial.print(voltage, 3);
-
-  if (getFanState()) {
-    Serial.print("     PWM: ");
-    Serial.print(getFanPWM());
-    Serial.print(" ");
-  }
-
+  // Serial.print("      Current: ");
+  // Serial.print(getCurrentValue());
+  float voltage = getCurrentValue() * (3.3 / 4095.0);
+  Serial.print("      Current: ");
+  Serial.print(voltage, 3);
+  /*
+    if (getFanState()) {
+      Serial.print("     PWM: ");
+      Serial.print(getFanPWM());
+      Serial.print(" ");
+    }
+  */
   Serial.println();
   // Serial.println();
   // Serial.print("RPM: ");

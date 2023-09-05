@@ -13,7 +13,7 @@ uint16_t currentReadings[currentDataPointCount] = {0};
 uint8_t currentReadIndex = 0;
 uint64_t currentRunningTotal = 0;
 
-uint16_t outputValueDAC = 2000;
+uint16_t outputValueDAC = 1000;
 
 void controlTimerInterrupt() { readCurrent(); }
 
@@ -47,6 +47,7 @@ void configureControls() {
 void setOutputState(bool state) {
   digitalWrite(pinOutputEnable, state);
   outputEnabled = state;
+  setFanState(state);
 }
 
 bool getOutputState() { return outputEnabled; }

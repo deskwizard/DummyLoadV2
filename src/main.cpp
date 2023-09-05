@@ -78,6 +78,7 @@ void handleSerialInput() {
       readValue = Serial.parseInt();
       Serial.print("d: ");
       Serial.println(readValue);
+      setDAC(readValue);
       break;
 
     case 'f':

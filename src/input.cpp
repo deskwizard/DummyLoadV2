@@ -127,7 +127,7 @@ void handleInputs() {
     if (enableSwitchState == EN_SW_DOWN) {
       if (getOutputState()) {
         setOutputState(OUTPUT_OFF);
-      } else {
+      } else if (!getOutputState() && !getAlarmFlag()) {
         setOutputState(OUTPUT_ON);
       }
     }
