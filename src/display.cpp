@@ -3,7 +3,7 @@
 
 HardwareSerial displaySerial(displaySerialRX, displaySerialTX);
 bool displayMode = DISPLAY_MODE_VALUE;
-uint8_t selectedDigit = 0;
+uint8_t selectedDigit = 2;  // TODO: should be 0
 
 void configureDisplay() {
 
@@ -38,15 +38,19 @@ void updateDisplay() {
   displaySerial.write('v');
 
   if (getDisplayMode() == DISPLAY_MODE_SET) {
-    displaySerial.print(getValueDAC());
+    displaySerial.print(getCurrent());
   } else {
     // displaySerial.print(getCurrentValue());
     if (getOutputState()) {
-      uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) * 1000);
+
+      uint16_t voltage = 0; // lol voltage...
+      // Todo: Fix that next line
+      // uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) * 1000);
+
       displaySerial.print(voltage);
     } else {
-      //displaySerial.print(0);
-      displaySerial.print(getValueDAC());
+      // displaySerial.print(0);
+      displaySerial.print(getCurrent());
     }
   }
 }

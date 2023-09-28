@@ -2,6 +2,8 @@
 #include "control.h"
 #include "display.h"
 
+#define maxDAC 4000
+
 HardwareTimer inputTimer(HW_TIMER_INPUT);
 
 volatile bool enableSwitchState;
@@ -21,7 +23,7 @@ extern uint16_t outputValueDAC;
 
 void configureInputs() {
 
-  pinMode(pinEnableSwitch, INPUT_PULLUP);
+  pinMode(pinOutputEnableSwitch, INPUT_PULLUP);
 
   pinMode(pinRangeSwitch, INPUT_PULLUP);
 
@@ -30,7 +32,7 @@ void configureInputs() {
   pinMode(pinEncoderB, INPUT_PULLUP);
 
   // Preload current switch state
-  enableSwitchState = digitalRead(pinEnableSwitch);
+  enableSwitchState = digitalRead(pinOutputEnableSwitch);
   enableSwitchLastState = enableSwitchState;
 
   rangeSwitchState = digitalRead(pinRangeSwitch);
@@ -61,29 +63,51 @@ void handleInputs() {
     if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
       Serial.println("Encoder +");
 
-      if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
-
-        if (outputValueDAC >= maxDAC) {
-          outputValueDAC = maxDAC;
-        } else {
-          // Here
-          outputValueDAC = outputValueDAC + encoderStep[getSelectedDigit()];
-        }
-        // setDAC(outputValueDAC);
-        setOutput(outputValueDAC);
+      if (getCurrent() + encoderStep[getSelectedDigit()] >= MAX_CURRENT) {
+        setCurrent(MAX_CURRENT);
+      } else {
+        setCurrent(getCurrent() + encoderStep[getSelectedDigit()]);
       }
+
     } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
       Serial.println("Encoder -");
 
-      if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
-        if (outputValueDAC == 0) {
-          outputValueDAC = 0;
-        } else {
-          outputValueDAC = outputValueDAC - encoderStep[getSelectedDigit()];
-        }
-        // setDAC(outputValueDAC);
-        setOutput(outputValueDAC);
+      int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
+      Serial.print("get: ");
+      Serial.print(getCurrent());
+      Serial.print("   value: ");
+      Serial.println(tempValue);
+
+      // setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
+
+      if (tempValue < 0) {
+        Serial.println("Underflow");
+        setCurrent(0);
+      } else {
+        setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
       }
+
+      // setCurrent(tempValue);
+
+      /*
+            if (getCurrent() - encoderStep[getSelectedDigit()] <= 0) {
+              setCurrent(0);
+            } else {
+              setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
+            }
+            */
+      /*
+            if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
+              if (outputValueDAC == 0) {
+                outputValueDAC = 0;
+              } else {
+                outputValueDAC = outputValueDAC -
+         encoderStep[getSelectedDigit()];
+              }
+              setDAC(outputValueDAC);
+              // setCurrent(outputValueDAC);
+            }
+            */
     }
 
     lastEncoderPosition = currentEncoderPosition;
@@ -153,6 +177,6 @@ void inputTimerInterrupt() {
   }
 
   encoderSwitchState = digitalRead(pinEncoderSwitch);
-  enableSwitchState = digitalRead(pinEnableSwitch);
+  enableSwitchState = digitalRead(pinOutputEnableSwitch);
   rangeSwitchState = digitalRead(pinRangeSwitch);
 }

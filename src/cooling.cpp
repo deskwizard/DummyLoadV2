@@ -71,7 +71,8 @@ void oneSecondTimerInterrupt() {
   tachPulseCount = 0;
 
   if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-    setAlarm(ALARM_FAN_FAIL);
+    // TODO: bypass temporarily
+    // setAlarm(ALARM_FAN_FAIL);
   }
 
 }

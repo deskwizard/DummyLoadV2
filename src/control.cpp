@@ -2,9 +2,9 @@
 #include "cooling.h"
 #include "display.h"
 
-HardwareTimer controlTimer(HW_TIMER_CONTROL);
+// HardwareTimer controlTimer(HW_TIMER_CONTROL);
 
-#define currentDataPointCount 50
+// #define currentDataPointCount 50
 
 bool alarmTriggeredFlag = false;
 bool outputEnabled = false;
@@ -13,42 +13,47 @@ uint16_t currentReadings[currentDataPointCount] = {0};
 uint8_t currentReadIndex = 0;
 uint64_t currentRunningTotal = 0;
 */
-uint16_t outputValueDAC = 1000;
+// uint16_t outputValueDAC = 0;
 
-void controlTimerInterrupt() { // readCurrent();
-}
+uint16_t outputCurrent = 0;
+
+// void controlTimerInterrupt() { // readCurrent();
+// }
 
 void configureControls() {
 
-  pinMode(pinDacOutput, OUTPUT);
-  pinMode(pinOutputEnable, OUTPUT);
-  //pinMode(pinCurrentADC, INPUT_ANALOG);
-  digitalWrite(pinOutputEnable, LOW);
-  digitalWrite(pinDacOutput, LOW);
+  Wire.begin();
+  // Wire.setClock(4000000);
+  setDAC(0);
 
-  // setDAC(outputValueDAC);
-  setOutput(outputValueDAC);
-/*
-  // Configure controlTimer (math is all wrong, freq. is correct-ish...)
-  controlTimer.setPrescaleFactor(
-      2564); // Set prescaler to 2564 => controlTimer frequency = 168MHz/2564 =
-             // 65522 Hz (from prediv'd by 1 clocksource of 168 MHz)
+  // pinMode(pinDacOutput, OUTPUT);
+  // pinMode(pinCurrentADC, INPUT_ANALOG);
+  pinMode(pinOutputEnableRelay, OUTPUT);
+  digitalWrite(pinOutputEnableRelay, LOW);
+  // digitalWrite(pinDacOutput, LOW);
 
-  // Set overflow to 16380 => controlTimer frequency = 65522 Hz / 16380 = 1 Hz
-  controlTimer.setOverflow(163);
+  /*
+    // Configure controlTimer (math is all wrong, freq. is correct-ish...)
+    controlTimer.setPrescaleFactor(
+        2564); // Set prescaler to 2564 => controlTimer frequency = 168MHz/2564
+    =
+               // 65522 Hz (from prediv'd by 1 clocksource of 168 MHz)
 
-  controlTimer.attachInterrupt(controlTimerInterrupt);
-  controlTimer.refresh(); // Make register changes take effect
-  controlTimer.resume();  // Start
-*/
-  Serial.print("DAC output: ");
-  Serial.println(outputValueDAC);
+    // Set overflow to 16380 => controlTimer frequency = 65522 Hz / 16380 = 1 Hz
+    controlTimer.setOverflow(163);
+
+    controlTimer.attachInterrupt(controlTimerInterrupt);
+    controlTimer.refresh(); // Make register changes take effect
+    controlTimer.resume();  // Start
+  */
 }
 
 void setOutputState(bool state) {
-  digitalWrite(pinOutputEnable, state);
+  digitalWrite(pinOutputEnableRelay, state);
   outputEnabled = state;
   setFanState(state);
+  Serial.print("Output state changed to: ");
+  Serial.println(state);
 }
 
 bool getOutputState() { return outputEnabled; }
@@ -82,17 +87,51 @@ void clearAlarm() {
 
 bool getAlarmFlag() { return alarmTriggeredFlag; }
 
-void setOutput(uint16_t desiredOutput) {
-  float output = desiredOutput;
-  output = desiredOutput * (3.3 / 4095.0) * 1000.0;
-  Serial.print("Desired output: ");
-  Serial.println(desiredOutput);
+void setCurrent(uint16_t current) {
+  /*
+    if (current >= MAX_CURRENT) {
+      outputCurrent = MAX_CURRENT;
+      Serial.println("MAX output reached.");
+      return;
+    } else {
+      outputCurrent = current;
+    }
+  */
+  outputCurrent = current;
+  // I could make that calculation in one line, but it'll take me
+  // ages to figure it out if I ever have to look at this again.
+  float value = (float(current) + 0.5) / 1000.0;
+  uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
+  setDAC(outputCode);
 
-  Serial.print("Output: ");
-  Serial.println(output);
-  setDAC(uint16_t(desiredOutput));
+  Serial.print("Output current: ");
+  Serial.print(value, 3);
+  Serial.print(" A");
+  Serial.println();
 }
 
+void setDAC(uint16_t output_value) {
+
+  // outputValueDAC = output_value;
+
+  delay(50); // REQUIRED !!!!
+
+  Wire.begin();
+  Wire.beginTransmission(MCP4725_ADDR);
+  Wire.write(64);                       // cmd to update the DAC
+  Wire.write(output_value >> 4);        // the 8 most significant bits...
+  Wire.write((output_value & 15) << 4); // the 4 least significant bits...
+  Wire.endTransmission();
+  Wire.end();
+
+  Serial.print("DAC output: ");
+  Serial.print(output_value);
+  Serial.println();
+}
+
+uint16_t getCurrent() { return outputCurrent; }
+
+/*
 void setDAC(uint16_t value) {
 
   if (value >= maxDAC) {
@@ -103,31 +142,19 @@ void setDAC(uint16_t value) {
   Serial.print("DAC output code: ");
   Serial.println(outputValueDAC);
 }
+*/
 
-uint16_t getValueDAC() { return outputValueDAC; }
+// uint16_t getValueDAC() { return outputValueDAC; }
 
 /*
-void readCurrent() {
+void setOutput(uint16_t desiredOutput) {
+  float output = desiredOutput;
+  output = desiredOutput * (3.3 / 4095.0) * 1000.0;
+  Serial.print("Desired output: ");
+  Serial.println(desiredOutput);
 
-  // Subtract the last reading
-  currentRunningTotal = currentRunningTotal - currentReadings[currentReadIndex];
-
-  // Read from the sensor
-  //*********************************** here
-  currentReadings[currentReadIndex] = analogRead(pinCurrentADC);
-
-  // Add the reading to the tempRunningTotal
-  currentRunningTotal = currentRunningTotal + currentReadings[currentReadIndex];
-
-  // Advance to the next position in the array
-  currentReadIndex = currentReadIndex + 1;
-
-  // If we're at the end of the array, wrap around to the beginning
-  if (currentReadIndex >= currentDataPointCount) {
-    currentReadIndex = 0;
-  }
-}
-uint16_t getCurrentValue() {
-  return currentRunningTotal / currentDataPointCount;
+  Serial.print("Output: ");
+  Serial.println(output);
+  setDAC(uint16_t(desiredOutput));
 }
 */
