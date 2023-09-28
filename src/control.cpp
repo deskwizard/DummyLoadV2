@@ -8,26 +8,27 @@ HardwareTimer controlTimer(HW_TIMER_CONTROL);
 
 bool alarmTriggeredFlag = false;
 bool outputEnabled = false;
-
+/*
 uint16_t currentReadings[currentDataPointCount] = {0};
 uint8_t currentReadIndex = 0;
 uint64_t currentRunningTotal = 0;
-
+*/
 uint16_t outputValueDAC = 1000;
 
-void controlTimerInterrupt() { readCurrent(); }
+void controlTimerInterrupt() { // readCurrent();
+}
 
 void configureControls() {
 
   pinMode(pinDacOutput, OUTPUT);
   pinMode(pinOutputEnable, OUTPUT);
-  pinMode(pinCurrentADC, INPUT_ANALOG);
+  //pinMode(pinCurrentADC, INPUT_ANALOG);
   digitalWrite(pinOutputEnable, LOW);
   digitalWrite(pinDacOutput, LOW);
 
-
-  setDAC(outputValueDAC);
-
+  // setDAC(outputValueDAC);
+  setOutput(outputValueDAC);
+/*
   // Configure controlTimer (math is all wrong, freq. is correct-ish...)
   controlTimer.setPrescaleFactor(
       2564); // Set prescaler to 2564 => controlTimer frequency = 168MHz/2564 =
@@ -39,7 +40,7 @@ void configureControls() {
   controlTimer.attachInterrupt(controlTimerInterrupt);
   controlTimer.refresh(); // Make register changes take effect
   controlTimer.resume();  // Start
-
+*/
   Serial.print("DAC output: ");
   Serial.println(outputValueDAC);
 }
@@ -81,6 +82,17 @@ void clearAlarm() {
 
 bool getAlarmFlag() { return alarmTriggeredFlag; }
 
+void setOutput(uint16_t desiredOutput) {
+  float output = desiredOutput;
+  output = desiredOutput * (3.3 / 4095.0) * 1000.0;
+  Serial.print("Desired output: ");
+  Serial.println(desiredOutput);
+
+  Serial.print("Output: ");
+  Serial.println(output);
+  setDAC(uint16_t(desiredOutput));
+}
+
 void setDAC(uint16_t value) {
 
   if (value >= maxDAC) {
@@ -88,12 +100,13 @@ void setDAC(uint16_t value) {
   }
   outputValueDAC = value;
   analogWrite(pinDacOutput, value);
-  Serial.print("DAC output: ");
+  Serial.print("DAC output code: ");
   Serial.println(outputValueDAC);
 }
 
 uint16_t getValueDAC() { return outputValueDAC; }
 
+/*
 void readCurrent() {
 
   // Subtract the last reading
@@ -114,4 +127,7 @@ void readCurrent() {
     currentReadIndex = 0;
   }
 }
-uint16_t getCurrentValue() { return currentRunningTotal / currentDataPointCount; }
+uint16_t getCurrentValue() {
+  return currentRunningTotal / currentDataPointCount;
+}
+*/

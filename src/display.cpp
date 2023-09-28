@@ -45,7 +45,8 @@ void updateDisplay() {
       uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) * 1000);
       displaySerial.print(voltage);
     } else {
-      displaySerial.print(0);
+      //displaySerial.print(0);
+      displaySerial.print(getValueDAC());
     }
   }
 }
@@ -75,19 +76,8 @@ void serialDisplay() {
 
   // Serial.print("      Current: ");
   // Serial.print(getCurrentValue());
-  float voltage = getCurrentValue() * (3.3 / 4095.0);
-  Serial.print("      Current: ");
-  Serial.print(voltage, 3);
-  /*
-    if (getFanState()) {
-      Serial.print("     PWM: ");
-      Serial.print(getFanPWM());
-      Serial.print(" ");
-    }
-  */
-  Serial.println();
-  // Serial.println();
-  // Serial.print("RPM: ");
-  // Serial.println(getFanRPM());
+  // float voltage = getCurrentValue() * (3.3 / 4095.0);
+  // Serial.print("      Current: ");
+  // Serial.print(voltage, 3);
   // Serial.println();
 }

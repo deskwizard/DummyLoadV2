@@ -69,7 +69,8 @@ void handleInputs() {
           // Here
           outputValueDAC = outputValueDAC + encoderStep[getSelectedDigit()];
         }
-        setDAC(outputValueDAC);
+        // setDAC(outputValueDAC);
+        setOutput(outputValueDAC);
       }
     } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
       Serial.println("Encoder -");
@@ -80,7 +81,8 @@ void handleInputs() {
         } else {
           outputValueDAC = outputValueDAC - encoderStep[getSelectedDigit()];
         }
-        setDAC(outputValueDAC);
+        // setDAC(outputValueDAC);
+        setOutput(outputValueDAC);
       }
     }
 
@@ -114,7 +116,6 @@ void handleInputs() {
           selectSetDigit(counter);
           counter--;
         }
-
       }
     }
   }

@@ -6,22 +6,20 @@
 
 /*
     Currently Free:
+        D7
         D10
-        A1
-        A5
-        A6
-        A7
+        A0 - A6
+
 */
 
-
-#define pinEncoderA D0
-#define pinEncoderB D1
-#define pinEncoderSwitch D2
+#define pinEncoderSwitch A4
+#define pinEncoderA A5
+#define pinEncoderB A6
 
 #define pinRangeSwitch D3
 
-#define displaySerialRX D4
-#define displaySerialTX D5
+#define displaySerialRX D0
+#define displaySerialTX D1
 
 #define pinFanEnable D6
 #define pinFanTach D8
@@ -34,7 +32,5 @@
 #define debugSerialTX D13
 
 #define pinOutputEnable A7
-#define pinDacOutput A3
-#define pinCurrentADC A0
 
 #endif
