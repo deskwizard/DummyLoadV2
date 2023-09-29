@@ -64,21 +64,16 @@ void clearAlarm() {
 bool getAlarmFlag() { return alarmTriggeredFlag; }
 
 void setCurrent(uint16_t current) {
-  /*
-    if (current >= MAX_CURRENT) {
-      outputCurrent = MAX_CURRENT;
-      Serial.println("MAX output reached.");
-      return;
-    } else {
-      outputCurrent = current;
-    }
-  */
+
   outputCurrent = current;
+
   // I could make that calculation in one line, but it'll take me
   // ages to figure it out if I ever have to look at this again.
   float value = (float(current) + 0.5) / 1000.0;
   uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
   setDAC(outputCode);
+
+  displayValue(outputCurrent);
 
   Serial.print("Output current: ");
   Serial.print(value, 3);
@@ -87,8 +82,6 @@ void setCurrent(uint16_t current) {
 }
 
 void setDAC(uint16_t output_value) {
-
-  // delay(50); // REQUIRED ???
 
   Wire.begin();
   Wire.beginTransmission(MCP4725_ADDR);
