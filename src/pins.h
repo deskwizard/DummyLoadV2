@@ -25,7 +25,7 @@
 // RX   1
 #define pinRangeSwitch 4
 #define pinFanEnable 5
-#define pinAlarmLED 6 // Do we need this with the display anyway?
+#define pinAlarmLED 6 // Do we need this with the display flashing?
 #define pinOutputEnableRelay 7
 
 #define pinFanTach 3

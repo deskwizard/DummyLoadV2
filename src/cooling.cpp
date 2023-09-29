@@ -1,5 +1,7 @@
 #include "cooling.h"
 
+/******** Fan alarmed currently disabled ********/
+
 // For debugging
 bool rampDir = false;                // Ramp up or down
 bool fanControlMode = FAN_CTRL_AUTO; // Auto or manual
@@ -20,7 +22,6 @@ void configureCooling() {
 
 void handleCooling() {
 
-
   // Alarm LED flash
   uint32_t currentMillis = millis();
   static uint32_t previousMillis = 0;
@@ -38,7 +39,7 @@ void handleCooling() {
 
   if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
     // TODO: bypass temporarily
-    setAlarm(ALARM_FAN_FAIL);
+    //setAlarm(ALARM_FAN_FAIL);
   }
     previousMillis = currentMillis;
   }
@@ -84,4 +85,4 @@ void oneSecondTimerInterrupt() {
   }
 }
 */
-void fanTachInterruptHandler() { tachPulseCount++; }
+// void fanTachInterruptHandler() { tachPulseCount++; }

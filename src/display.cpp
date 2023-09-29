@@ -88,6 +88,7 @@ void handleDisplay() {
       for (uint8_t x = 0; x <= 3; x++) {
 
         // We don't have an error and we're in set mode, so flash selected digit
+        // (displayIntensity is just reused here)
         if (x == selectedDigit) {
           if (displayIntensity) {
             display.setDigit(0, x, displayDigits[x], periodValues[x]);
@@ -103,6 +104,23 @@ void handleDisplay() {
     previousMillis = currentMillis;
   }
 }
-void displayAlarmSet(uint8_t error) {}
+void displayAlarmSet(uint8_t alarmType) {
+  //
+  display.setChar(0, 0, 'E', false);
 
-void displayAlarmClear() { displayValue(getCurrent()); }
+  display.setRow(0, 1, 0b0000101); // 'r'
+  display.setRow(0, 2, 0b0000101); // 'r'
+
+  if (alarmType == ALARM_FAN_FAIL) {
+    display.setChar(0, 3, 'F', false);
+  } else if (alarmType == ALARM_OVER_TEMP) {
+    display.setChar(0, 3, 'H', false);
+  } else if (alarmType == ALARM_OVER_CURRENT) {
+    display.setChar(0, 3, 'C', false);
+  }
+}
+
+void displayAlarmClear() {
+  display.setIntensity(0, INTENSITY_DEFAULT);
+  displayValue(getCurrent());
+}

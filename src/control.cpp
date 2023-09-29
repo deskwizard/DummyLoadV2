@@ -6,14 +6,6 @@ uint16_t outputCurrent = 0;
 bool outputEnabled = false;
 bool alarmTriggeredFlag = false;
 
-/*
-// Reuse for NTC ?
-const uint8_t currentDataPointCount;
-uint16_t currentReadings[currentDataPointCount] = {0};
-uint8_t currentReadIndex = 0;
-uint64_t currentRunningTotal = 0;
-*/
-
 void configureControls() {
 
   Wire.begin();
