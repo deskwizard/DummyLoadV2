@@ -9,7 +9,7 @@
         D2
         A6/A7 Analog only (fan tach charge cap something?)
         D8
-        *SPI 10/11/12/13
+        *SPI 10/11/13 -- MISO (12) Not used for display
 */
 
 #define pinOutputEnableSwitch A0
@@ -31,8 +31,8 @@
 #define pinFanTach 3
 #define pinFanPWM 9 // Timer 1
 
-// SPI SS       10
-// SPI MOSI     11
-// SPI MISO     12
-// SPI SCK      13
+// SPI SS       10      (Yellow)
+// SPI MOSI     11      (Purple)
+// SPI MISO     12      Not used
+// SPI SCK      13      (Blue)
 #endif

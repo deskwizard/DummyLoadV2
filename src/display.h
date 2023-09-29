@@ -8,7 +8,10 @@
 #define DISPLAY_MODE_SET 0
 #define DISPLAY_MODE_VALUE 1
 
+#define INTENSITY_DEFAULT 12
+
 void configureDisplay();
+void displayDashes();
 void setDisplayMode(bool mode);
 bool getDisplayMode();
 void selectSetDigit(uint8_t digit);

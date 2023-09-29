@@ -1,12 +1,27 @@
 #include "display.h"
 #include "cooling.h"
+#include "LedControl.h"
 
-//HardwareSerial displaySerial(displaySerialRX, displaySerialTX);
+// LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
+LedControl display = LedControl(11, 13, 10, 1);
+
 bool displayMode = DISPLAY_MODE_VALUE;
 uint8_t selectedDigit = 1;
 
 void configureDisplay() {
 
+  display.setScanLimit(0, 4);
+  display.shutdown(0, false);
+  display.setIntensity(0, INTENSITY_DEFAULT);
+  display.clearDisplay(0);
+
+  displayDashes();
+}
+
+void displayDashes() {
+  for (uint8_t x = 0; x <= 3; x++) {
+    display.setChar(0, x, '-', false);
+  }
 }
 
 void setDisplayMode(bool mode) {
