@@ -109,9 +109,6 @@ void handleDisplay() {
 
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
 
-    // If we just started, do a little period show
-    // we're gonna need a counter and a bit of a mess...
-
     if (getAlarmFlag()) {
       if (displayIntensity) {
         display.setIntensity(0, INTENSITY_DEFAULT);
@@ -119,53 +116,35 @@ void handleDisplay() {
         display.setIntensity(0, INTENSITY_LOW);
       }
       displayIntensity = !displayIntensity;
-    } else {
+    } // else {
+    else if (displayMode == DISPLAY_MODE_SET) {
 
       for (uint8_t x = 0; x <= 3; x++) {
-
+        /*
         Serial.print("here ");
         Serial.print(x);
         Serial.print("  mode: ");
         Serial.print(displayMode);
         Serial.print("  digit: ");
         Serial.println(selectedDigit);
+        */
 
-        // We don't have an error, and we're in set mode so flash digit
-        if (x == selectedDigit && displayMode == DISPLAY_MODE_SET) {
+        // We don't have an error and we're in set mode, so flash selected digit
+        if (x == selectedDigit) {
           if (displayIntensity) {
-            //            Serial.print("that one high: ");
-            //            Serial.println(x);
             display.setDigit(0, x, displayDigits[x], periodValues[x]);
           } else {
-            //            Serial.print("that one low: ");
             display.setChar(0, x, '_', false);
           }
           displayIntensity = !displayIntensity;
         }
         // here
       } // loopy
-    }   // else
+    }   // else if
 
     previousMillis = currentMillis;
   }
 }
-/*
-// Will need rework for flashing and stuff
-void handleDisplay2() {
-
-  uint32_t currentMillis = millis();
-  static uint32_t previousMillis = 0;
-
-  if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
-    if (!getAlarmFlag()) {
-      updateDisplay();
-    }
-    serialDisplay();
-    previousMillis = currentMillis;
-  }
-}
-*/
 void displayAlarmSet(uint8_t error) {}
 
-void displayAlarmClear() { // displaySerial.write('e');
-}
+void displayAlarmClear() { displayValue(getCurrent()); }

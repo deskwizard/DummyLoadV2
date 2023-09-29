@@ -80,7 +80,7 @@ void handleInputs() {
     Serial.println(encoderSwitchState);
     encoderSwitchLastState = encoderSwitchState;
 
-    static uint8_t counter = 3; // For rollover purposes
+    static uint8_t counter = 3; // For rollover purposes (??)
 
     if (encoderSwitchState == EN_SW_DOWN) {
 
@@ -90,17 +90,19 @@ void handleInputs() {
       }
 
       if (getDisplayMode() == DISPLAY_MODE_VALUE) {
+
         setDisplayMode(DISPLAY_MODE_SET);
         counter = 3;
-        selectSetDigit(3);
+        selectSetDigit(counter);
+
       } else if (getDisplayMode() == DISPLAY_MODE_SET) {
 
-        if (getSelectedDigit() == 0) {
+        if (getSelectedDigit() != 0) {
+          counter--;
+          selectSetDigit(counter);
+        } else {
           counter = 3;
           setDisplayMode(DISPLAY_MODE_VALUE);
-        } else {
-          selectSetDigit(counter);
-          counter--;
         }
       }
     }
