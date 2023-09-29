@@ -39,6 +39,7 @@ uint16_t getFanRPM() { return fanRPM; }
 
 uint16_t getFanPWM() { return fanPWM; }
 
+/*
 void oneSecondTimerInterrupt() {
 
   static volatile bool ledState = false;
@@ -53,8 +54,8 @@ void oneSecondTimerInterrupt() {
 
   if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
     // TODO: bypass temporarily
-    // setAlarm(ALARM_FAN_FAIL);
+    setAlarm(ALARM_FAN_FAIL);
   }
 }
-
+*/
 void fanTachInterruptHandler() { tachPulseCount++; }

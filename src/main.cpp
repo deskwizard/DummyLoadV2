@@ -1,14 +1,24 @@
 /*
   Notes:
 
+
+
+  Ideas:
+
     - use DPST switch for range, one side to signal the mcu, one side
       for the actual range (and LED? Would save us a pin)
 
+  Todo:
 
-  Todo:  *** NOT UP TO DATE, IGNORE FOR THE TIME BEING ***
+      - Alarms
+      - NTC read + smoothing
+      - Fan PWM
+      - Fan Tach
+
+
+  To fix:  *** NOT UP TO DATE, IGNORE FOR THE TIME BEING ***
 
   - Fan tach reading is fine at RPM min/max but not at intermediate speed ??
-  - setDAC is called 3 times per encoder step ??
   - Mapping from NTC value top PWM value feels dodgy
           -> It underflows before the specified value ("Fixed")
           -> It's mapping from 2550 or w/e instead of 2600 for some reason??
@@ -124,6 +134,14 @@ void handleSerialInput() {
 
     case 's':
       i2cScan();
+      break;
+
+    case 'q':
+      setAlarm(0);
+      break;
+
+    case 'w':
+      clearAlarm();
       break;
     }
   }
