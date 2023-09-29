@@ -14,7 +14,7 @@ uint8_t displayDigits[4] = {0};
 bool periodValues[4] = {false};
 
 bool displayMode = DISPLAY_MODE_VALUE;
-uint8_t selectedDigit = 1;
+uint8_t selectedDigit = 0;
 
 void configureDisplay() {
 
@@ -23,7 +23,8 @@ void configureDisplay() {
   display.setIntensity(0, INTENSITY_DEFAULT);
   display.clearDisplay(0);
 
-  displayDashes();
+  displayValue(getCurrent());
+  // displayDashes();
 }
 
 void displayDashes() {
@@ -35,7 +36,7 @@ void displayDashes() {
 void displayValue(uint16_t value) {
 
   // Reset the display update timer so it updates ASAP
-  previousMillis = millis(); 
+  previousMillis = millis();
 
   displayDigits[0] = (value / 1000U) % 10;
   displayDigits[1] = (value / 100U) % 10;
@@ -50,7 +51,9 @@ void displayValue(uint16_t value) {
 
 void setDisplayMode(bool mode) {
   displayMode = mode;
+  Serial.println(mode);
   if (displayMode == DISPLAY_MODE_VALUE) {
+    displayValue(getCurrent());
   }
 }
 
@@ -58,34 +61,97 @@ bool getDisplayMode() { return displayMode; }
 
 void selectSetDigit(uint8_t digit) {
   selectedDigit = digit;
+  displayValue(getCurrent());
   Serial.print("selected digit: ");
   Serial.println(selectedDigit);
 }
 
 uint8_t getSelectedDigit() { return selectedDigit; }
+/*
+void updateDisplay2() {
 
-void updateDisplay() {
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = 0;
+  static bool state = false;
 
-  if (getDisplayMode() == DISPLAY_MODE_SET) {
-    // displaySerial.print(getCurrent());
-  } else {
-    // displaySerial.print(getCurrentValue());
-    if (getOutputState()) {
+  if ((uint32_t)(currentMillis - previousMillis) >= 500) {
+    // Serial.println(state);
+    state = !state;
+    digitalWrite(pinAlarmLED, state);
+    previousMillis = currentMillis;
+  }
 
-      // uint16_t voltage = 0; // lol voltage...
-      //  Todo: Fix that next line
-      //  uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) *
-      //  1000);
 
-      // displaySerial.print(voltage);
-    } else {
-      // displaySerial.print(0);
+    if (getDisplayMode() == DISPLAY_MODE_SET) {
       // displaySerial.print(getCurrent());
+    } else {
+      // displaySerial.print(getCurrentValue());
+      if (getOutputState()) {
+
+        // uint16_t voltage = 0; // lol voltage...
+        //  Todo: Fix that next line
+        //  uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) *
+        //  1000);
+
+        // displaySerial.print(voltage);
+      } else {
+
+      }
     }
+
+}
+*/
+void handleDisplay() {
+
+  uint32_t currentMillis = millis();
+  // static uint32_t previousMillis = 0;
+  static bool displayIntensity = true;
+
+  if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
+
+    // If we just started, do a little period show
+    // we're gonna need a counter and a bit of a mess...
+
+    if (getAlarmFlag()) {
+      if (displayIntensity) {
+        display.setIntensity(0, INTENSITY_DEFAULT);
+      } else {
+        display.setIntensity(0, INTENSITY_LOW);
+      }
+      displayIntensity = !displayIntensity;
+    } else {
+
+      for (uint8_t x = 0; x <= 3; x++) {
+
+        Serial.print("here ");
+        Serial.print(x);
+        Serial.print("  mode: ");
+        Serial.print(displayMode);
+        Serial.print("  digit: ");
+        Serial.println(selectedDigit);
+
+        // We don't have an error, and we're in set mode so flash digit
+        if (x == selectedDigit && displayMode == DISPLAY_MODE_SET) {
+          if (displayIntensity) {
+            //            Serial.print("that one high: ");
+            //            Serial.println(x);
+            display.setDigit(0, x, displayDigits[x], periodValues[x]);
+          } else {
+            //            Serial.print("that one low: ");
+            display.setChar(0, x, '_', false);
+          }
+          displayIntensity = !displayIntensity;
+        }
+        // here
+      } // loopy
+    }   // else
+
+    previousMillis = currentMillis;
   }
 }
-
-void handleDisplay() {
+/*
+// Will need rework for flashing and stuff
+void handleDisplay2() {
 
   uint32_t currentMillis = millis();
   static uint32_t previousMillis = 0;
@@ -98,21 +164,8 @@ void handleDisplay() {
     previousMillis = currentMillis;
   }
 }
-
-void displayAlarmSet(uint8_t error) {
-  // displaySerial.write('E');
-  // displaySerial.print(error);
-}
+*/
+void displayAlarmSet(uint8_t error) {}
 
 void displayAlarmClear() { // displaySerial.write('e');
-}
-
-void serialDisplay() {
-
-  // Serial.print("      Current: ");
-  // Serial.print(getCurrentValue());
-  // float voltage = getCurrentValue() * (3.3 / 4095.0);
-  // Serial.print("      Current: ");
-  // Serial.print(voltage, 3);
-  // Serial.println();
 }

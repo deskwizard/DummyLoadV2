@@ -51,7 +51,7 @@ void setup() {
 void loop() {
 
   handleInputs();
-  // handleDisplay();
+  handleDisplay();
   handleSerialInput();
 
   // testDAC();
