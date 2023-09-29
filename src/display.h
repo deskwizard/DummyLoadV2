@@ -3,15 +3,13 @@
 
 #include "defines.h"
 
-#define DISPLAY_UPDATE_TIME 500 // in ms
+#define DISPLAY_UPDATE_TIME 500 // Update and flashing rates
 
 #define DISPLAY_MODE_SET 0
 #define DISPLAY_MODE_VALUE 1
 
-#define INTENSITY_DEFAULT 4
-#define INTENSITY_LOW 10
-
-#define NO_FLASH 42 // Random
+#define INTENSITY_DEFAULT 12
+#define INTENSITY_LOW 4
 
 void configureDisplay();
 void displayDashes();
@@ -20,11 +18,8 @@ void setDisplayMode(bool mode);
 bool getDisplayMode();
 void selectSetDigit(uint8_t digit);
 uint8_t getSelectedDigit();
+void handleDisplay();
 void displayAlarmSet(uint8_t error);
 void displayAlarmClear();
-
-void handleDisplay();
-void serialDisplay();
-
 
 #endif

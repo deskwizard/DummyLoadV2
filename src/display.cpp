@@ -24,7 +24,6 @@ void configureDisplay() {
   display.clearDisplay(0);
 
   displayValue(getCurrent());
-  // displayDashes();
 }
 
 void displayDashes() {
@@ -67,44 +66,10 @@ void selectSetDigit(uint8_t digit) {
 }
 
 uint8_t getSelectedDigit() { return selectedDigit; }
-/*
-void updateDisplay2() {
 
-  uint32_t currentMillis = millis();
-  static uint32_t previousMillis = 0;
-  static bool state = false;
-
-  if ((uint32_t)(currentMillis - previousMillis) >= 500) {
-    // Serial.println(state);
-    state = !state;
-    digitalWrite(pinAlarmLED, state);
-    previousMillis = currentMillis;
-  }
-
-
-    if (getDisplayMode() == DISPLAY_MODE_SET) {
-      // displaySerial.print(getCurrent());
-    } else {
-      // displaySerial.print(getCurrentValue());
-      if (getOutputState()) {
-
-        // uint16_t voltage = 0; // lol voltage...
-        //  Todo: Fix that next line
-        //  uint16_t voltage = uint16_t(getCurrentValue() * (3.3 / 4095.0) *
-        //  1000);
-
-        // displaySerial.print(voltage);
-      } else {
-
-      }
-    }
-
-}
-*/
 void handleDisplay() {
 
   uint32_t currentMillis = millis();
-  // static uint32_t previousMillis = 0;
   static bool displayIntensity = true;
 
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
@@ -116,18 +81,11 @@ void handleDisplay() {
         display.setIntensity(0, INTENSITY_LOW);
       }
       displayIntensity = !displayIntensity;
-    } // else {
+
+    } // Otherwise set mode
     else if (displayMode == DISPLAY_MODE_SET) {
 
       for (uint8_t x = 0; x <= 3; x++) {
-        /*
-        Serial.print("here ");
-        Serial.print(x);
-        Serial.print("  mode: ");
-        Serial.print(displayMode);
-        Serial.print("  digit: ");
-        Serial.println(selectedDigit);
-        */
 
         // We don't have an error and we're in set mode, so flash selected digit
         if (x == selectedDigit) {
@@ -138,8 +96,8 @@ void handleDisplay() {
           }
           displayIntensity = !displayIntensity;
         }
-        // here
-      } // loopy
+
+      } // for
     }   // else if
 
     previousMillis = currentMillis;

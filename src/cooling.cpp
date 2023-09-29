@@ -18,6 +18,32 @@ void configureCooling() {
   digitalWrite(pinFanEnable, LOW);
 }
 
+void handleCooling() {
+
+
+  // Alarm LED flash
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = 0;
+  static bool ledState = false;
+
+  if ((uint32_t)(currentMillis - previousMillis) >= 1000) {
+
+  if (getAlarmFlag()) {
+    ledState = !ledState;
+    digitalWrite(pinAlarmLED, ledState);
+  }
+
+  fanRPM = tachPulseCount * 60;
+  tachPulseCount = 0;
+
+  if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
+    // TODO: bypass temporarily
+    setAlarm(ALARM_FAN_FAIL);
+  }
+    previousMillis = currentMillis;
+  }
+}
+
 // ******************************* Fans *******************************
 
 void setFanMode(bool mode) {

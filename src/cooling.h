@@ -13,13 +13,13 @@
 #define FAN_CTRL_MAN 1
 
 void configureCooling();
-
+void handleCooling();
 void setFanMode(bool mode);
 void setFanState(bool state);
 bool getFanState();
 uint16_t getFanRPM();
 uint16_t getFanPWM();
-void oneSecondTimerInterrupt();
+//void oneSecondTimerInterrupt();
 void fanTachInterruptHandler();
 
 #endif

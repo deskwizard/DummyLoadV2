@@ -60,12 +60,11 @@ void setup() {
 
 void loop() {
 
+  handleCooling();
   handleInputs();
   handleDisplay();
   handleSerialInput();
 
-  // testDAC();
-  // flashDebugLED();  // it's on the 1sec timer
 }
 
 void testDAC() {
