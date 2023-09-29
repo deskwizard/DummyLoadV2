@@ -2,10 +2,6 @@
 #include "control.h"
 #include "display.h"
 
-#define maxDAC 4000
-
-HardwareTimer inputTimer(HW_TIMER_INPUT);
-
 volatile bool enableSwitchState;
 bool enableSwitchLastState;
 
@@ -18,8 +14,6 @@ volatile bool encoderSwitchState;
 bool encoderSwitchLastState;
 
 const uint16_t encoderStep[4] = {1000, 100, 10, 1};
-
-extern uint16_t outputValueDAC;
 
 void configureInputs() {
 
@@ -41,77 +35,45 @@ void configureInputs() {
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   rangeSwitchLastState = encoderSwitchState;
 
-  // Preload encoder state
-
-  // Configure timer (math is all wrong, freq. is correct-ish...)
-  inputTimer.setPrescaleFactor(
-      2564); // Set prescaler to 2564 => fanTachTimer frequency = 168MHz/2564 =
-             // 65522 Hz (from prediv'd by 1 clocksource of 168 MHz)
-
-  // Set overflow to 163 => fanTachTimer frequency = 65522 Hz / 163 = 10ms(?)
-  inputTimer.setOverflow(163);
-
-  inputTimer.attachInterrupt(inputTimerInterrupt);
-  inputTimer.refresh(); // Make register changes take effect
-  inputTimer.resume();  // Start
+  configureTimer();
 }
 
 void handleInputs() {
 
   if (currentEncoderPosition != lastEncoderPosition) {
 
-    if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
-      Serial.println("Encoder +");
+    if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
 
-      if (getCurrent() + encoderStep[getSelectedDigit()] >= MAX_CURRENT) {
-        setCurrent(MAX_CURRENT);
-      } else {
-        setCurrent(getCurrent() + encoderStep[getSelectedDigit()]);
+      if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
+        Serial.println("Encoder +");
+
+        if (getCurrent() + encoderStep[getSelectedDigit()] >= MAX_CURRENT) {
+          setCurrent(MAX_CURRENT);
+        } else {
+          setCurrent(getCurrent() + encoderStep[getSelectedDigit()]);
+        }
+
+      } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
+        Serial.println("Encoder -");
+
+        int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
+
+        Serial.print("get: ");
+        Serial.print(getCurrent());
+        Serial.print("   value: ");
+        Serial.println(tempValue);
+
+        if (tempValue < 0) {
+          Serial.println("Underflow");
+          setCurrent(0);
+        } else {
+          setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
+        }
       }
-
-    } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
-      Serial.println("Encoder -");
-
-      int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
-      Serial.print("get: ");
-      Serial.print(getCurrent());
-      Serial.print("   value: ");
-      Serial.println(tempValue);
-
-      // setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
-
-      if (tempValue < 0) {
-        Serial.println("Underflow");
-        setCurrent(0);
-      } else {
-        setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
-      }
-
-      // setCurrent(tempValue);
-
-      /*
-            if (getCurrent() - encoderStep[getSelectedDigit()] <= 0) {
-              setCurrent(0);
-            } else {
-              setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
-            }
-            */
-      /*
-            if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
-              if (outputValueDAC == 0) {
-                outputValueDAC = 0;
-              } else {
-                outputValueDAC = outputValueDAC -
-         encoderStep[getSelectedDigit()];
-              }
-              setDAC(outputValueDAC);
-              // setCurrent(outputValueDAC);
-            }
-            */
     }
 
     lastEncoderPosition = currentEncoderPosition;
-  }
+  } // encoders
 
   if (encoderSwitchState != encoderSwitchLastState) {
     Serial.print("Encoder switch: ");
@@ -165,8 +127,7 @@ void handleInputs() {
   }
 }
 
-void inputTimerInterrupt() {
-
+ISR(TIMER2_COMPA_vect) {
   currentEncoderPosition = 0;
 
   if (!digitalRead(pinEncoderA)) {
@@ -179,4 +140,31 @@ void inputTimerInterrupt() {
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   enableSwitchState = digitalRead(pinOutputEnableSwitch);
   rangeSwitchState = digitalRead(pinRangeSwitch);
+}
+
+void configureTimer() {
+
+  // TIMER 2 for interrupt frequency 1000 Hz:
+  cli(); // Disable interrupts
+
+  // Clear TCCR2A and TCCR2B
+  TCCR2A = 0;
+  TCCR2B = 0;
+
+  // Initialize counter value to 0
+  TCNT2 = 0;
+
+  // Set compare match register for 1000 Hz increments
+  OCR2A = 249; // = 8000000 / (32 * 1000) - 1 (must be <256)
+
+  // Set CTC mode
+  TCCR2B |= (1 << WGM21);
+
+  // Prescaler /32
+  TCCR2B |= (0 << CS22) | (1 << CS21) | (1 << CS20);
+
+  // Enable timer compare interrupt
+  TIMSK2 |= (1 << OCIE2A);
+
+  sei(); // Re-enable interrupts
 }

@@ -3,12 +3,11 @@
 
 #include "defines.h"
 
-#define ENCODER_STEP 10
-
 #define EN_SW_DOWN false
 #define EN_SW_UP true
 
 void configureInputs();
+void configureTimer();
 void handleInputs();
 void inputTimerInterrupt();
 

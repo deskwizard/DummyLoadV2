@@ -1,7 +1,5 @@
 #include "cooling.h"
 
-HardwareTimer fanTachTimer(HW_TIMER_COOLING);
-
 // For debugging
 bool rampDir = false;                // Ramp up or down
 bool fanControlMode = FAN_CTRL_AUTO; // Auto or manual
@@ -15,26 +13,10 @@ void configureCooling() {
 
   pinMode(pinFanEnable, OUTPUT);
   pinMode(pinFanTach, INPUT);
-
+  pinMode(pinAlarmLED, OUTPUT);
 
   digitalWrite(pinFanEnable, LOW);
-
-  attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
-                  RISING);
-
-  // Configure fanTachTimer (math is all wrong, freq. is correct-ish...)
-  fanTachTimer.setPrescaleFactor(
-      2564); // Set prescaler to 2564 => fanTachTimer frequency = 168MHz/2564 =
-             // 65522 Hz (from prediv'd by 1 clocksource of 168 MHz)
-
-  // Set overflow to 16380 => fanTachTimer frequency = 65522 Hz / 16380 = 1 Hz
-  fanTachTimer.setOverflow(16380);
-
-  fanTachTimer.attachInterrupt(oneSecondTimerInterrupt);
-  fanTachTimer.refresh(); // Make register changes take effect
-  fanTachTimer.resume();  // Start
 }
-
 
 // ******************************* Fans *******************************
 
@@ -49,7 +31,6 @@ void setFanState(bool state) {
   Serial.print("Fan state: ");
   Serial.println(fanEnabled);
   digitalWrite(pinFanEnable, fanEnabled);
-
 }
 
 bool getFanState() { return fanEnabled; }
@@ -64,7 +45,7 @@ void oneSecondTimerInterrupt() {
 
   if (getAlarmFlag()) {
     ledState = !ledState;
-    digitalWrite(pinDebugLED, ledState);
+    digitalWrite(pinAlarmLED, ledState);
   }
 
   fanRPM = tachPulseCount * 60;
@@ -74,7 +55,6 @@ void oneSecondTimerInterrupt() {
     // TODO: bypass temporarily
     // setAlarm(ALARM_FAN_FAIL);
   }
-
 }
 
 void fanTachInterruptHandler() { tachPulseCount++; }

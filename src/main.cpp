@@ -1,11 +1,11 @@
 /*
   Notes:
+
     - use DPST switch for range, one side to signal the mcu, one side
       for the actual range (and LED? Would save us a pin)
-    - Should we move the output status LED to the free contacts on the
-      relay? That would save another pin...
 
-  Todo:
+
+  Todo:  *** NOT UP TO DATE, IGNORE FOR THE TIME BEING ***
 
   - Fan tach reading is fine at RPM min/max but not at intermediate speed ??
   - setDAC is called 3 times per encoder step ??
@@ -17,7 +17,6 @@
   - Fan PWM output will need evening out, do smoothing on the mapped PWM values?
   - NTC value to fan pwm map() is dodgy as f..k
 
-
 */
 
 #include "control.h"
@@ -27,36 +26,26 @@
 #include "input.h"
 #include <Wire.h>
 
-void scan();
-void flashDebugLED();
+void testDAC();
 void handleSerialInput();
+void flashDebugLED();
+void i2cScan();
 
-extern bool rampDir;
+extern bool rampDir; // Debug
 
 void setup() {
 
   Wire.begin();
 
-  Serial.setRx(debugSerialRX);
-  Serial.setTx(debugSerialTX);
   Serial.setTimeout(200);
   Serial.begin(115200);
-  delay(2000);
   Serial.println("Hello");
   Serial.println();
-
-  // Those settings need to be set first as they're
-  // used for multiple different functions
-  analogWriteFrequency(25000);
-  // analogWriteResolution(12);
-  analogReadResolution(12);
 
   configureControls();
   configureCooling();
   configureInputs();
   configureDisplay();
-
-  pinMode(pinDebugLED, OUTPUT);
 }
 
 void loop() {
@@ -65,27 +54,28 @@ void loop() {
   // handleDisplay();
   handleSerialInput();
 
-  /*
-    uint32_t currentMillis = millis();
-    static uint32_t previousMillis = 0;
-    static uint16_t value = 0;
-
-    if ((uint32_t)(currentMillis - previousMillis) >= 2000) {
-
-      if (value < 1000) {
-        value = value + 100;
-        setCurrent(value);
-      } else {
-        value = 0;
-        // Otherwise code 0 is like 60mV
-        setCurrent(value);
-        //Serial.println("--------------");
-      }
-
-      previousMillis = currentMillis;
-    }
-  */
+  // testDAC();
   // flashDebugLED();  // it's on the 1sec timer
+}
+
+void testDAC() {
+
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = 0;
+  static uint16_t value = 0;
+
+  if ((uint32_t)(currentMillis - previousMillis) >= 2000) {
+
+    if (value < 1000) {
+      value = value + 100;
+      setCurrent(value);
+    } else {
+      value = 0;
+      setCurrent(value);
+    }
+
+    previousMillis = currentMillis;
+  }
 }
 
 void handleSerialInput() {
@@ -133,7 +123,7 @@ void handleSerialInput() {
       break;
 
     case 's':
-      scan();
+      i2cScan();
       break;
     }
   }
@@ -148,23 +138,24 @@ void flashDebugLED() {
   if ((uint32_t)(currentMillis - previousMillis) >= debugLedFlashInterval) {
 
     ledState = !ledState;
-    digitalWrite(pinDebugLED, ledState);
+    digitalWrite(pinAlarmLED, ledState);
 
     previousMillis = currentMillis;
   }
 }
 
-void scan() {
-  byte error, address;
-  int nDevices;
+void i2cScan() {
+  uint8_t error, address;
+  int16_t nDevices;
 
   Serial.println("Scanning...");
 
   nDevices = 0;
   for (address = 1; address < 127; address++) {
-    // The i2c_scanner uses the return value of
-    // the Write.endTransmisstion to see if
-    // a device did acknowledge to the address.
+
+    // The return value of the Write.endTransmission
+    // to see if a device did acknowledge to the address.
+
     Wire.beginTransmission(address);
     error = Wire.endTransmission();
 
@@ -187,6 +178,4 @@ void scan() {
     Serial.println("No I2C devices found\n");
   else
     Serial.println("done\n");
-
-  // delay(5000); // wait 5 seconds for next scan
 }
