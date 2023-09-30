@@ -23,6 +23,7 @@ void setFanState(bool state);
 bool getFanState();
 uint16_t getFanRPM();
 uint16_t getFanPWM();
+void setFanPWM(uint16_t value);
 void fanTachInterruptHandler();
 void oneSecondTimerInterrupt();
 

@@ -68,7 +68,6 @@ void loop() {
   handleInputs();
   handleDisplay();
   handleSerialInput();
-
 }
 
 void testDAC() {
@@ -99,6 +98,11 @@ void handleSerialInput() {
     uint32_t readValue;
 
     switch (c) {
+
+    case 'p':
+      readValue = Serial.parseInt();
+      setFanPWM(readValue);
+      break;
     case 'd':
       readValue = Serial.parseInt();
       Serial.print("d: ");
@@ -107,11 +111,11 @@ void handleSerialInput() {
       break;
 
     case 'f':
-      setFanMode(false);
+      setFanMode(FAN_CTRL_MAN);
       setFanState(false);
       break;
     case 'F':
-      setFanMode(true);
+      setFanMode(FAN_CTRL_MAN);
       setFanState(true);
       break;
     case 'a':

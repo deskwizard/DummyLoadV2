@@ -5,6 +5,7 @@
 // For debugging
 bool rampDir = false;                // Ramp up or down
 bool fanControlMode = FAN_CTRL_AUTO; // Auto or manual
+void testPWM();
 
 // Fans
 bool fanEnabled = false;
@@ -40,16 +41,19 @@ void handleCooling() {
       digitalWrite(pinAlarmLED, ledState);
     }
 
-    fanRPM = tachPulseCount * (60 / TACH_PULSE_PER_ROTATION);
-    tachPulseCount = 0;
+    if (fanEnabled) {
 
-    Serial.print("RPM: ");
-    Serial.println(fanRPM);
-    Serial.println();
+      fanRPM = tachPulseCount * (60 / TACH_PULSE_PER_ROTATION);
+      tachPulseCount = 0;
 
-    // Fan tach alarm
-    if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-      setAlarm(ALARM_FAN_FAIL);
+      // Fan Tach alarm
+      if (fanRPM == 0 && !getAlarmFlag()) {
+        setAlarm(ALARM_FAN_FAIL);
+      }
+
+      Serial.print("RPM: ");
+      Serial.println(fanRPM);
+      Serial.println();
     }
 
     if (getOutputState() && getNTC() > MAX_NTC && !getAlarmFlag()) {
@@ -80,6 +84,12 @@ bool getFanState() { return fanEnabled; }
 uint16_t getFanRPM() { return fanRPM; }
 
 uint16_t getFanPWM() { return fanPWM; }
+
+void setFanPWM(uint16_t value) {
+  analogWrite(pinFanPWM, value);
+  Serial.print("New PWM: ");
+  Serial.println(value);
+}
 
 void fanTachInterruptHandler() { tachPulseCount++; }
 
