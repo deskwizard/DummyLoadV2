@@ -4,10 +4,16 @@
 #include "control.h"
 #include "defines.h"
 
-#define fanEnableThreshold 2600
-#define fanThresholdDeadband 50
-#define fanMaxPWM 0
-#define fanMinPWM 3000
+// Approximate
+// 25C     515
+// 30C     564
+
+
+//#define fanThresholdDeadband 50
+
+#define NTC_READ_COUNT 50
+#define OVERTEMP_THRESHOLD 600
+#define NTC_FAN_THRESHOLD 520  // ADC Read value
 
 #define TACH_PULSE_PER_ROTATION 2
 
@@ -18,6 +24,7 @@ void configureCooling();
 void handleCooling();
 
 /**********  Fans *********/
+
 void setFanMode(bool mode);
 void setFanState(bool state);
 bool getFanState();
@@ -27,9 +34,8 @@ void setFanPWM(uint16_t value);
 void fanTachInterruptHandler();
 void oneSecondTimerInterrupt();
 
+
 /**********  NTC *********/
-#define NTC_READ_COUNT 50
-#define MAX_NTC 500
 
 void readNTC();
 uint16_t getNTC();

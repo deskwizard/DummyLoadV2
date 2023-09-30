@@ -19,7 +19,7 @@ void configureControls() {
 void setOutputState(bool state) {
   digitalWrite(pinOutputEnableRelay, state);
   outputEnabled = state;
-  setFanState(state);
+  // setFanState(state);
   Serial.print("Output state changed to: ");
   Serial.println(state);
 }
@@ -30,6 +30,7 @@ void setAlarm(uint8_t alarmType) {
   alarmTriggeredFlag = true;
 
   // No matter what, turn output off, set fan to max speed
+  setFanPWM(255); // Shouldn't happen but just in case
   setOutputState(OUTPUT_OFF);
 
   displayAlarmSet(alarmType);

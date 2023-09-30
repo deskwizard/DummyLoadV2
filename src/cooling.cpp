@@ -9,7 +9,7 @@ void testPWM();
 
 // Fans
 bool fanEnabled = false;
-uint16_t fanPWM = fanMinPWM;
+uint16_t fanPWM = 0; // fanMinPWM;
 volatile uint32_t tachPulseCount = 0;
 volatile uint16_t fanRPM = 0;
 
@@ -25,6 +25,7 @@ void configureCooling() {
 
   attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
                   FALLING);
+  setFanPWM(255);
 }
 
 void handleCooling() {
@@ -54,9 +55,11 @@ void handleCooling() {
       Serial.print("RPM: ");
       Serial.println(fanRPM);
       Serial.println();
+    } else if (getNTC() >= NTC_FAN_THRESHOLD && !fanEnabled) {
+      setFanState(true);
     }
 
-    if (getOutputState() && getNTC() > MAX_NTC && !getAlarmFlag()) {
+    if (getOutputState() && getNTC() > OVERTEMP_THRESHOLD && !getAlarmFlag()) {
       setAlarm(ALARM_OVER_TEMP);
     }
 

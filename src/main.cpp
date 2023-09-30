@@ -16,8 +16,8 @@
             it's the same millis() stuff.
       - Inhibit output enable until cooled down on overtemp
       - Move timer stuff to a separate file
-      - Fan PWM
-      - Fan Tach
+      - Fan PWM *
+      - Fan Tach *
 
 
   To fix:  *** NOT UP TO DATE, IGNORE FOR THE TIME BEING ***
