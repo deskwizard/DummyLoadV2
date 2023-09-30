@@ -21,6 +21,9 @@ void configureCooling() {
   pinMode(pinAlarmLED, OUTPUT);
 
   digitalWrite(pinFanEnable, LOW);
+
+  attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
+                  FALLING);
 }
 
 void handleCooling() {
@@ -37,13 +40,16 @@ void handleCooling() {
       digitalWrite(pinAlarmLED, ledState);
     }
 
-    fanRPM = tachPulseCount * 60;
+    fanRPM = tachPulseCount * (60 / TACH_PULSE_PER_ROTATION);
     tachPulseCount = 0;
+
+    Serial.print("RPM: ");
+    Serial.println(fanRPM);
+    Serial.println();
 
     // Fan tach alarm
     if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-      // TODO: bypass temporarily
-      // setAlarm(ALARM_FAN_FAIL);
+      setAlarm(ALARM_FAN_FAIL);
     }
 
     if (getOutputState() && getNTC() > MAX_NTC && !getAlarmFlag()) {
@@ -75,26 +81,7 @@ uint16_t getFanRPM() { return fanRPM; }
 
 uint16_t getFanPWM() { return fanPWM; }
 
-/*
-void oneSecondTimerInterrupt() {
-
-  static volatile bool ledState = false;
-
-  if (getAlarmFlag()) {
-    ledState = !ledState;
-    digitalWrite(pinAlarmLED, ledState);
-  }
-
-  fanRPM = tachPulseCount * 60;
-  tachPulseCount = 0;
-
-  if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-    // TODO: bypass temporarily
-    setAlarm(ALARM_FAN_FAIL);
-  }
-}
-*/
-// void fanTachInterruptHandler() { tachPulseCount++; }
+void fanTachInterruptHandler() { tachPulseCount++; }
 
 // ******************************* NTC *******************************
 

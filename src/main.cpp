@@ -7,6 +7,7 @@
 
     - use DPST switch for range, one side to signal the mcu, one side
       for the actual range (and LED? Would save us a pin)
+    - Change fan tach routine to save last pulse and trigger if > timeout
     - OC alarm if we get there
 
   Todo:

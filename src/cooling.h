@@ -9,6 +9,8 @@
 #define fanMaxPWM 0
 #define fanMinPWM 3000
 
+#define TACH_PULSE_PER_ROTATION 2
+
 #define FAN_CTRL_AUTO 0
 #define FAN_CTRL_MAN 1
 
@@ -22,6 +24,7 @@ bool getFanState();
 uint16_t getFanRPM();
 uint16_t getFanPWM();
 void fanTachInterruptHandler();
+void oneSecondTimerInterrupt();
 
 /**********  NTC *********/
 #define NTC_READ_COUNT 50

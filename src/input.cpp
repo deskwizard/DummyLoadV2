@@ -148,6 +148,7 @@ ISR(TIMER2_COMPA_vect) {
 
   // Testing
   readNTC();
+
 }
 
 void configureTimer() {
