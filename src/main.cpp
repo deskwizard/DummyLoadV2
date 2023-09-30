@@ -1,17 +1,20 @@
 /*
   Notes:
-
+      - The NTC read is in the input timer interrupt for now
 
 
   Ideas:
 
     - use DPST switch for range, one side to signal the mcu, one side
       for the actual range (and LED? Would save us a pin)
+    - OC alarm if we get there
 
   Todo:
-
-      - Alarms
-      - NTC read + smoothing
+      - Immediately display the underscore when we change digit set
+          - now it does, but it messes up with the blinking since
+            it's the same millis() stuff.
+      - Inhibit output enable until cooled down on overtemp
+      - Move timer stuff to a separate file
       - Fan PWM
       - Fan Tach
 

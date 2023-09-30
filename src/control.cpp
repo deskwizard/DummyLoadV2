@@ -50,6 +50,7 @@ void clearAlarm() {
   alarmTriggeredFlag = false;
   displayAlarmClear();
   digitalWrite(pinAlarmLED, LOW);
+  setDisplayMode(DISPLAY_MODE_VALUE);
   Serial.println("********** Alarm(s) Cleared **********");
 }
 

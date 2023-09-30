@@ -3,3 +3,8 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+hardware/DummyLoadV2/DummyLoadV2-backups
+hardware/DummyLoadV2/_autosave-DummyLoadV2.kicad_sch
+hardware/DummyLoadV2/#auto_saved_files#
+hardware/DummyLoadV2/*.lck
+hardware/DummyLoadV2/fp-info-cache

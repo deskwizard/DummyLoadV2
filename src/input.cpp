@@ -2,6 +2,9 @@
 #include "control.h"
 #include "display.h"
 
+// debug
+#include "cooling.h"
+
 volatile bool enableSwitchState;
 bool enableSwitchLastState;
 
@@ -142,6 +145,9 @@ ISR(TIMER2_COMPA_vect) {
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   enableSwitchState = digitalRead(pinOutputEnableSwitch);
   rangeSwitchState = digitalRead(pinRangeSwitch);
+
+  // Testing
+  readNTC();
 }
 
 void configureTimer() {

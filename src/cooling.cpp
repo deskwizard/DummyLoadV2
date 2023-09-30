@@ -1,15 +1,18 @@
 #include "cooling.h"
 
-/******** Fan alarmed currently disabled ********/
+/******** Fan alarm currently disabled ********/
 
 // For debugging
 bool rampDir = false;                // Ramp up or down
 bool fanControlMode = FAN_CTRL_AUTO; // Auto or manual
 
+// Fans
 bool fanEnabled = false;
 uint16_t fanPWM = fanMinPWM;
 volatile uint32_t tachPulseCount = 0;
 volatile uint16_t fanRPM = 0;
+
+uint16_t total = 0; // NTC running total
 
 void configureCooling() {
 
@@ -22,25 +25,31 @@ void configureCooling() {
 
 void handleCooling() {
 
-  // Alarm LED flash
+  static bool ledState = false;
+
   uint32_t currentMillis = millis();
   static uint32_t previousMillis = 0;
-  static bool ledState = false;
 
   if ((uint32_t)(currentMillis - previousMillis) >= 1000) {
 
-  if (getAlarmFlag()) {
-    ledState = !ledState;
-    digitalWrite(pinAlarmLED, ledState);
-  }
+    if (getAlarmFlag()) {
+      ledState = !ledState;
+      digitalWrite(pinAlarmLED, ledState);
+    }
 
-  fanRPM = tachPulseCount * 60;
-  tachPulseCount = 0;
+    fanRPM = tachPulseCount * 60;
+    tachPulseCount = 0;
 
-  if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
-    // TODO: bypass temporarily
-    //setAlarm(ALARM_FAN_FAIL);
-  }
+    // Fan tach alarm
+    if (fanEnabled && fanRPM == 0 && !getAlarmFlag()) {
+      // TODO: bypass temporarily
+      // setAlarm(ALARM_FAN_FAIL);
+    }
+
+    if (getOutputState() && getNTC() > MAX_NTC && !getAlarmFlag()) {
+      setAlarm(ALARM_OVER_TEMP);
+    }
+
     previousMillis = currentMillis;
   }
 }
@@ -86,3 +95,39 @@ void oneSecondTimerInterrupt() {
 }
 */
 // void fanTachInterruptHandler() { tachPulseCount++; }
+
+// ******************************* NTC *******************************
+
+void readNTC() {
+
+  static uint8_t readingIndex = 0; // the index of the current reading
+  static uint16_t readings[NTC_READ_COUNT] = {0};
+
+  total = total - readings[readingIndex];      // subtract the last reading
+  readings[readingIndex] = analogRead(pinNTC); // read from the sensor
+  total = total + readings[readingIndex];      // add the reading to the total
+  readingIndex++; // advance to the next position in the array:
+
+  // if we're at the end of the array, wrap around to the beginning
+  if (readingIndex >= NTC_READ_COUNT) {
+    readingIndex = 0;
+  }
+}
+
+uint16_t getNTC() { return total / NTC_READ_COUNT; }
+
+void printTemperature() {
+
+  uint16_t Vo = total / NTC_READ_COUNT; // the average
+
+  float R2 = R1 * (1023.0 / (float)Vo - 1.0);
+  float logR2 = log(R2);
+  float T = (1.0 / (C1 + C2 * logR2 + C3 * logR2 * logR2 * logR2));
+  T = T - 273.15; // result in C
+
+  Serial.print("Vo: ");
+  Serial.print(Vo);
+  Serial.print("  T: ");
+  Serial.print(T);
+  Serial.println("°C");
+}

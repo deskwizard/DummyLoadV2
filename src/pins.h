@@ -21,6 +21,8 @@
 // i²c SCK      A4
 // i²c SCL      A5
 
+#define pinNTC A7
+
 // TX   0
 // RX   1
 #define pinRangeSwitch 4
