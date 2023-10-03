@@ -17,7 +17,7 @@
 #define pinFanTach 3
 #define pinFanEnable 4
 #define pinFanPWM 5 // Timer 0
-
+#define pinRangeRelay 6
 #define pinEnableRelay 7
 #define pinRangeSwitch 8
 

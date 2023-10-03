@@ -4,17 +4,13 @@
 #include "control.h"
 #include "defines.h"
 
-// Approximate
-// 25C     515
-// 30C     564
-
 
 #define COOLING_INTERVAL 1000
 
 #define NTC_READ_COUNT 50
-#define OVERTEMP_THRESHOLD 575
-#define NTC_FAN_THRESHOLD 520  // ADC Read value
-#define FAN_OFF_THRESHOLD 560
+#define OVERTEMP_THRESHOLD 900
+#define NTC_FAN_THRESHOLD 700  // ADC Read value
+#define FAN_OFF_THRESHOLD 600
 
 #define TACH_PULSE_PER_ROTATION 2
 

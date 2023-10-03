@@ -18,7 +18,9 @@ void configureControls() {
   setDAC(0);
 
   pinMode(pinEnableRelay, OUTPUT);
+  pinMode(pinRangeRelay, OUTPUT);
   digitalWrite(pinEnableRelay, LOW);
+  digitalWrite(pinRangeRelay, LOW);
 }
 
 void setOutputState(bool state) {

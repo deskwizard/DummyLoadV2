@@ -24,7 +24,8 @@ void configureCooling() {
 
   attachInterrupt(digitalPinToInterrupt(pinFanTach), fanTachInterruptHandler,
                   FALLING);
-  setFanPWM(255);
+
+  setFanPWM(0); // Set fan to minimum to start with
 }
 
 void handleCooling() {
@@ -42,7 +43,7 @@ void handleCooling() {
 
     else if (fanEnabled) {
 
-      if (!getOutputState() && getNTC() < 550) {
+      if (!getOutputState() && getNTC() < FAN_OFF_THRESHOLD) {
         Serial.println("Output off and cooled down");
         setFanState(false);
         return;

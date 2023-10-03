@@ -129,6 +129,7 @@ void handleInputs() {
   if (rangeSwitchState != rangeSwitchLastState) {
     Serial.print("Range switch: ");
     Serial.println(rangeSwitchState);
+    digitalWrite(pinRangeRelay, rangeSwitchState);
     rangeSwitchLastState = rangeSwitchState;
   }
 }

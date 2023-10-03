@@ -18,6 +18,9 @@
       - Move timer stuff to a separate file
       - Fan PWM *
       - Fan Tach *
+      - Timeout adjustement mode after X seconds
+      - Do some magic to get temperature to an int and use that as values
+        instead of some NTC random numbers
 
 */
 
