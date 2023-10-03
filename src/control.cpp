@@ -12,12 +12,12 @@ void configureControls() {
   Wire.setClock(4000000);
   setDAC(0);
 
-  pinMode(pinOutputEnableRelay, OUTPUT);
-  digitalWrite(pinOutputEnableRelay, LOW);
+  pinMode(pinEnableRelay, OUTPUT);
+  digitalWrite(pinEnableRelay, LOW);
 }
 
 void setOutputState(bool state) {
-  digitalWrite(pinOutputEnableRelay, state);
+  digitalWrite(pinEnableRelay, state);
   outputEnabled = state;
   // setFanState(state);
   Serial.print("Output state changed to: ");
@@ -50,7 +50,6 @@ void setAlarm(uint8_t alarmType) {
 void clearAlarm() {
   alarmTriggeredFlag = false;
   displayAlarmClear();
-  digitalWrite(pinAlarmLED, LOW);
   setDisplayMode(DISPLAY_MODE_VALUE);
   Serial.println("********** Alarm(s) Cleared **********");
 }

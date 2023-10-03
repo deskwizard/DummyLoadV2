@@ -152,8 +152,7 @@ void handleSerialInput() {
       break;
     }
   }
-}
-
+}/*
 void flashDebugLED() {
 
   uint32_t currentMillis = millis();
@@ -168,7 +167,7 @@ void flashDebugLED() {
     previousMillis = currentMillis;
   }
 }
-
+*/
 void i2cScan() {
   uint8_t error, address;
   int16_t nDevices;
