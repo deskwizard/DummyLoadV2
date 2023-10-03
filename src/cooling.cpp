@@ -43,7 +43,7 @@ void handleCooling() {
     else if (fanEnabled) {
 
       if (!getOutputState() && getNTC() < 550) {
-        Serial.println("penis");
+        Serial.println("Output off and cooled down");
         setFanState(false);
         return;
       }
