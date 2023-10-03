@@ -19,18 +19,6 @@
       - Fan PWM *
       - Fan Tach *
 
-
-  To fix:  *** NOT UP TO DATE, IGNORE FOR THE TIME BEING ***
-
-  - Fan tach reading is fine at RPM min/max but not at intermediate speed ??
-  - Mapping from NTC value top PWM value feels dodgy
-          -> It underflows before the specified value ("Fixed")
-          -> It's mapping from 2550 or w/e instead of 2600 for some reason??
-          -> We don't need to update the fan speed every second do we...
-  - Output enable switch debounce (switch dependant...)
-  - Fan PWM output will need evening out, do smoothing on the mapped PWM values?
-  - NTC value to fan pwm map() is dodgy as f..k
-
 */
 
 #include "control.h"
@@ -139,6 +127,13 @@ void handleSerialInput() {
       setCurrent(readValue);
       break;
 
+    case 'v':
+      readValue = Serial.parseInt();
+      Serial.print("vref: ");
+      Serial.println(readValue);
+      setCurrent(readValue);
+      break;
+
     case 's':
       i2cScan();
       break;
@@ -152,22 +147,22 @@ void handleSerialInput() {
       break;
     }
   }
-}/*
-void flashDebugLED() {
+} /*
+ void flashDebugLED() {
 
-  uint32_t currentMillis = millis();
-  static uint32_t previousMillis = 0;
-  static bool ledState;
+   uint32_t currentMillis = millis();
+   static uint32_t previousMillis = 0;
+   static bool ledState;
 
-  if ((uint32_t)(currentMillis - previousMillis) >= debugLedFlashInterval) {
+   if ((uint32_t)(currentMillis - previousMillis) >= debugLedFlashInterval) {
 
-    ledState = !ledState;
-    digitalWrite(pinAlarmLED, ledState);
+     ledState = !ledState;
+     digitalWrite(pinAlarmLED, ledState);
 
-    previousMillis = currentMillis;
-  }
-}
-*/
+     previousMillis = currentMillis;
+   }
+ }
+ */
 void i2cScan() {
   uint8_t error, address;
   int16_t nDevices;

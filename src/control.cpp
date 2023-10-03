@@ -5,6 +5,11 @@
 uint16_t outputCurrent = 0;
 bool outputEnabled = false;
 bool alarmTriggeredFlag = false;
+float VREF = 5.093;
+
+void setVref(float value) {
+  VREF = value;
+}
 
 void configureControls() {
 
