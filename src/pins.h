@@ -25,13 +25,14 @@
 
 // TX   0
 // RX   1
-#define pinRangeSwitch 8
-#define pinFanEnable 4
-#define pinAlarmLED 6 // Do we need this with the display flashing?
-#define pinOutputEnableRelay 7
-
 #define pinFanTach 3
+#define pinFanEnable 4
 #define pinFanPWM 5 // Timer 0
+
+#define pinOutputEnableRelay 7
+#define pinRangeSwitch 8
+
+
 
 // SPI SS       10      (Yellow)
 // SPI MOSI     11      (Purple)

@@ -19,7 +19,6 @@ void configureCooling() {
 
   pinMode(pinFanEnable, OUTPUT);
   pinMode(pinFanTach, INPUT);
-  pinMode(pinAlarmLED, OUTPUT);
 
   digitalWrite(pinFanEnable, LOW);
 
