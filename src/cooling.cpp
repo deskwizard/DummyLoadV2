@@ -37,7 +37,17 @@ void handleCooling() {
 
     previousMillis = currentMillis;
 
-    if (fanEnabled) {
+    if (getOutputState() && getNTC() > OVERTEMP_THRESHOLD && !getAlarmFlag()) {
+      setAlarm(ALARM_OVER_TEMP);
+    }
+
+    else if (fanEnabled) {
+
+      if (!getOutputState() && getNTC() < 550) {
+        Serial.println("penis");
+        setFanState(false);
+        return;
+      }
 
       fanRPM = tachPulseCount * (60 / TACH_PULSE_PER_ROTATION);
       tachPulseCount = 0;
@@ -50,12 +60,10 @@ void handleCooling() {
       Serial.print("RPM: ");
       Serial.println(fanRPM);
       Serial.println();
-    } else if (getNTC() >= NTC_FAN_THRESHOLD && !fanEnabled) {
-      setFanState(true);
     }
-
-    if (getOutputState() && getNTC() > OVERTEMP_THRESHOLD && !getAlarmFlag()) {
-      setAlarm(ALARM_OVER_TEMP);
+    // Start fan
+    else if (getNTC() >= NTC_FAN_THRESHOLD && !fanEnabled && getOutputState()) {
+      setFanState(true);
     }
   }
 }
