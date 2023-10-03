@@ -37,6 +37,7 @@ void configureInputs() {
 
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   rangeSwitchLastState = encoderSwitchState;
+  
 
   configureTimer();
 }
