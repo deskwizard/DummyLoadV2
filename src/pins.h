@@ -7,7 +7,7 @@
 /*
     Currently Free:
         D2
-        A6/A7 Analog only (fan tach charge cap something?)
+        A6 Analog only (fan tach charge cap something?)
         D8
         *SPI 10/11/13 -- MISO (12) Not used for display
 */
@@ -25,13 +25,13 @@
 
 // TX   0
 // RX   1
-#define pinRangeSwitch 4
-#define pinFanEnable 5
+#define pinRangeSwitch 8
+#define pinFanEnable 4
 #define pinAlarmLED 6 // Do we need this with the display flashing?
 #define pinOutputEnableRelay 7
 
 #define pinFanTach 3
-#define pinFanPWM 9 // Timer 1
+#define pinFanPWM 5 // Timer 0
 
 // SPI SS       10      (Yellow)
 // SPI MOSI     11      (Purple)

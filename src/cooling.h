@@ -11,6 +11,8 @@
 
 //#define fanThresholdDeadband 50
 
+#define COOLING_INTERVAL 1000
+
 #define NTC_READ_COUNT 50
 #define OVERTEMP_THRESHOLD 600
 #define NTC_FAN_THRESHOLD 520  // ADC Read value

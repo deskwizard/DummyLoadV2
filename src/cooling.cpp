@@ -30,17 +30,12 @@ void configureCooling() {
 
 void handleCooling() {
 
-  static bool ledState = false;
-
   uint32_t currentMillis = millis();
   static uint32_t previousMillis = 0;
 
-  if ((uint32_t)(currentMillis - previousMillis) >= 1000) {
+  if ((uint32_t)(currentMillis - previousMillis) >= COOLING_INTERVAL) {
 
-    if (getAlarmFlag()) {
-      ledState = !ledState;
-      digitalWrite(pinAlarmLED, ledState);
-    }
+    previousMillis = currentMillis;
 
     if (fanEnabled) {
 
@@ -62,12 +57,10 @@ void handleCooling() {
     if (getOutputState() && getNTC() > OVERTEMP_THRESHOLD && !getAlarmFlag()) {
       setAlarm(ALARM_OVER_TEMP);
     }
-
-    previousMillis = currentMillis;
   }
 }
 
-// ******************************* Fans *******************************
+// ******************************* Fan *******************************
 
 void setFanMode(bool mode) {
   fanControlMode = mode;

@@ -326,6 +326,18 @@
     [
       "154f9743-c032-4045-ba5f-d157ba47940d",
       ""
+    ],
+    [
+      "11a9cbca-d036-47fd-b9fb-7165d9c4d663",
+      "Output Stage"
+    ],
+    [
+      "0ba57309-dd0e-45bb-b92d-a74581968d0a",
+      "Power Supply"
+    ],
+    [
+      "02c25695-dda5-4c86-9b7a-9696a2c46048",
+      "Digital"
     ]
   ],
   "text_variables": {}
