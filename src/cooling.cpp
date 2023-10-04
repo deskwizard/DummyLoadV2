@@ -18,7 +18,7 @@ uint16_t total = 0; // NTC running total
 void configureCooling() {
 
   pinMode(pinFanEnable, OUTPUT);
-  pinMode(pinFanTach, INPUT);
+  pinMode(pinFanTach, INPUT_PULLUP);
 
   digitalWrite(pinFanEnable, LOW);
 
