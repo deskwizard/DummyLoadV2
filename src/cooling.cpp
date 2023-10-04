@@ -117,8 +117,7 @@ void readNTC() {
 
 uint16_t getNTC() { return total / NTC_READ_COUNT; }
 
-void printTemperature() {
-
+uint8_t getTemperature() {
   uint16_t Vo = total / NTC_READ_COUNT; // the average
 
   float R2 = R1 * (1023.0 / (float)Vo - 1.0);
@@ -126,9 +125,11 @@ void printTemperature() {
   float T = (1.0 / (C1 + C2 * logR2 + C3 * logR2 * logR2 * logR2));
   T = T - 273.15; // result in C
 
-  Serial.print("Vo: ");
-  Serial.print(Vo);
-  Serial.print("  T: ");
-  Serial.print(T);
+  return uint8_t(T + 0.5);
+}
+
+void printTemperature() {
+  Serial.print("Temp: ");
+  Serial.print(getTemperature());
   Serial.println("°C");
 }

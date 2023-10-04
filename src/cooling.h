@@ -38,6 +38,7 @@ void oneSecondTimerInterrupt();
 
 void readNTC();
 uint16_t getNTC();
+uint8_t getTemperature();
 void printTemperature();
 
 // Constants for abalog read value to degrees C conversion
