@@ -37,13 +37,13 @@ void handleCooling() {
 
     previousMillis = currentMillis;
 
-    if (getOutputState() && getNTC() > OVERTEMP_THRESHOLD && !getAlarmFlag()) {
+    if (getOutputState() && getTemperature() >= OVERTEMP_THRESHOLD && !getAlarmFlag()) {
       setAlarm(ALARM_OVER_TEMP);
     }
 
     else if (fanEnabled) {
 
-      if (!getOutputState() && getNTC() < FAN_OFF_THRESHOLD) {
+      if (!getOutputState() && getTemperature() <= FAN_OFF_THRESHOLD) {
         Serial.println("Output off and cooled down");
         setFanState(false);
         return;
@@ -62,7 +62,7 @@ void handleCooling() {
       Serial.println();
     }
     // Start fan
-    else if (getNTC() >= NTC_FAN_THRESHOLD && !fanEnabled && getOutputState()) {
+    else if (getTemperature() >= NTC_FAN_THRESHOLD && !fanEnabled && getOutputState()) {
       setFanState(true);
     }
   }
@@ -118,6 +118,7 @@ void readNTC() {
 uint16_t getNTC() { return total / NTC_READ_COUNT; }
 
 uint8_t getTemperature() {
+
   uint16_t Vo = total / NTC_READ_COUNT; // the average
 
   float R2 = R1 * (1023.0 / (float)Vo - 1.0);

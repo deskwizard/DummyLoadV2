@@ -5,10 +5,8 @@
 
   Ideas:
 
-    - use DPST switch for range, one side to signal the mcu, one side
-      for the actual range (and LED? Would save us a pin)
     - Change fan tach routine to save last pulse and trigger if > timeout
-    - OC alarm if we get there
+    (- OC alarm if we get there)
 
   Todo:
       - Immediately display the underscore when we change digit set
@@ -19,9 +17,6 @@
       - Fan PWM *
       - Fan Tach *
       - Timeout adjustement mode after X seconds
-      - Do some magic to get temperature to an int and use that as values
-        instead of some NTC random numbers
-
 */
 
 #include "control.h"

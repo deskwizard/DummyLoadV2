@@ -4,15 +4,14 @@
 #include "control.h"
 #include "defines.h"
 
-
 #define COOLING_INTERVAL 1000
 
 #define NTC_READ_COUNT 50
 
-  // ADC Read value
-#define OVERTEMP_THRESHOLD 900
-#define NTC_FAN_THRESHOLD 650
-#define FAN_OFF_THRESHOLD 550
+// In celcius
+#define OVERTEMP_THRESHOLD 40
+#define NTC_FAN_THRESHOLD 35
+#define FAN_OFF_THRESHOLD 30
 
 #define TACH_PULSE_PER_ROTATION 2
 
@@ -32,7 +31,6 @@ uint16_t getFanPWM();
 void setFanPWM(uint16_t value);
 void fanTachInterruptHandler();
 void oneSecondTimerInterrupt();
-
 
 /**********  NTC *********/
 
