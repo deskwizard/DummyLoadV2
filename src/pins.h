@@ -25,9 +25,9 @@
 #define pinEncoderB 9
 
 #define DISPLAY_SS 10
-#define DISPLAY_MOSI 11
+#define PIN_MOSI 11
 //#define PIN_MISO     12      (not used for display)
-#define DISPLAY_SCK 13
+#define PIN_SCK 13
 
 
 

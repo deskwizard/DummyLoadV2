@@ -37,7 +37,6 @@ void configureInputs() {
 
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   rangeSwitchLastState = encoderSwitchState;
-  
 
   configureTimer();
 }
@@ -134,7 +133,7 @@ void handleInputs() {
   }
 }
 
-ISR(TIMER2_COMPA_vect) {
+ISR(TIMER1_COMPA_vect) {
   currentEncoderPosition = 0;
 
   if (!digitalRead(pinEncoderA)) {
@@ -150,32 +149,46 @@ ISR(TIMER2_COMPA_vect) {
 
   // Testing
   readNTC();
-
 }
 
 void configureTimer() {
+  // TIMER 1 for interrupt frequency 1000 Hz:
+  cli();      // stop interrupts
+  TCCR1A = 0; // set entire TCCR1A register to 0
+  TCCR1B = 0; // same for TCCR1B
+  TCNT1 = 0;  // initialize counter value to 0
+  // set compare match register for 1000 Hz increments
+  OCR1A = 15999; // = 16000000 / (1 * 1000) - 1 (must be <65536)
+  // turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+  // Set CS12, CS11 and CS10 bits for 1 prescaler
+  TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10);
+  // enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+  sei(); // allow interrupts
+  /*
+    // TIMER 2 for interrupt frequency 1000 Hz:
+    cli(); // Disable interrupts
 
-  // TIMER 2 for interrupt frequency 1000 Hz:
-  cli(); // Disable interrupts
+    // Clear TCCR2A and TCCR2B
+    TCCR2A = 0;
+    TCCR2B = 0;
 
-  // Clear TCCR2A and TCCR2B
-  TCCR2A = 0;
-  TCCR2B = 0;
+    // Initialize counter value to 0
+    TCNT2 = 0;
 
-  // Initialize counter value to 0
-  TCNT2 = 0;
+    // Set compare match register for 1000 Hz increments
+    OCR2A = 249; // = 8000000 / (32 * 1000) - 1 (must be <256)
 
-  // Set compare match register for 1000 Hz increments
-  OCR2A = 249; // = 8000000 / (32 * 1000) - 1 (must be <256)
+    // Set CTC mode
+    TCCR2B |= (1 << WGM21);
 
-  // Set CTC mode
-  TCCR2B |= (1 << WGM21);
+    // Prescaler /32
+    TCCR2B |= (0 << CS22) | (1 << CS21) | (1 << CS20);
 
-  // Prescaler /32
-  TCCR2B |= (0 << CS22) | (1 << CS21) | (1 << CS20);
+    // Enable timer compare interrupt
+    TIMSK2 |= (1 << OCIE2A);
 
-  // Enable timer compare interrupt
-  TIMSK2 |= (1 << OCIE2A);
-
-  sei(); // Re-enable interrupts
+    sei(); // Re-enable interrupts
+    */
 }
