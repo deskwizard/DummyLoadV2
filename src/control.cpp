@@ -1,21 +1,22 @@
 #include "control.h"
+#include "MCP4922.h"
 #include "cooling.h"
 #include "display.h"
+
+MCP4922 DAC;
 
 uint16_t outputCurrent = 0;
 bool outputEnabled = false;
 bool alarmTriggeredFlag = false;
-float VREF = 5.093;
+float VREF = 4.096;
 
-void setVref(float value) {
-  VREF = value;
-}
+void setVref(float value) { VREF = value; }
 
 void configureControls() {
 
-  Wire.begin();
-  Wire.setClock(4000000);
+  DAC.begin(A3); // Custom CS pin
   setDAC(0);
+  DAC.shutdown(false);
 
   pinMode(pinEnableRelay, OUTPUT);
   pinMode(pinRangeRelay, OUTPUT);
@@ -83,13 +84,7 @@ void setCurrent(uint16_t current) {
 
 void setDAC(uint16_t output_value) {
 
-  Wire.begin();
-  Wire.beginTransmission(MCP4725_ADDR);
-  Wire.write(64);                       // Update DAC command
-  Wire.write(output_value >> 4);        // the 8 most significant bits...
-  Wire.write((output_value & 15) << 4); // the 4 least significant bits...
-  Wire.endTransmission();
-  Wire.end();
+  DAC.setDAC(CHAN_A, output_value);
 
   Serial.print("DAC output: ");
   Serial.print(output_value);

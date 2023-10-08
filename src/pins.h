@@ -24,7 +24,8 @@
 #define pinEncoderA 8
 #define pinEncoderB 9
 
-#define DISPLAY_SS 10
+#define DAC_CS A3
+#define DISPLAY_CS 10
 #define PIN_MOSI 11
 //#define PIN_MISO     12      (not used for display)
 #define PIN_SCK 13

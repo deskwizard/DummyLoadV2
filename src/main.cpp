@@ -24,28 +24,25 @@
 #include "defines.h"
 #include "display.h"
 #include "input.h"
-#include <Wire.h>
 
 void testDAC();
 void handleSerialInput();
 void flashDebugLED();
-void i2cScan();
 
 extern bool rampDir; // Debug
 
 void setup() {
-
-  Wire.begin();
 
   Serial.setTimeout(200);
   Serial.begin(115200);
   Serial.println("Hello");
   Serial.println();
 
+  configureDisplay();
   configureControls();
   configureCooling();
   configureInputs();
-  configureDisplay();
+
 }
 
 void loop() {
@@ -132,10 +129,6 @@ void handleSerialInput() {
       setCurrent(readValue);
       break;
 
-    case 's':
-      i2cScan();
-      break;
-
     case 'q':
       setAlarm(0);
       break;
@@ -146,6 +139,8 @@ void handleSerialInput() {
     }
   }
 } /*
+ 
+ }
  void flashDebugLED() {
 
    uint32_t currentMillis = millis();
@@ -161,38 +156,3 @@ void handleSerialInput() {
    }
  }
  */
-void i2cScan() {
-  uint8_t error, address;
-  int16_t nDevices;
-
-  Serial.println("Scanning...");
-
-  nDevices = 0;
-  for (address = 1; address < 127; address++) {
-
-    // The return value of the Write.endTransmission
-    // to see if a device did acknowledge to the address.
-
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
-
-    if (error == 0) {
-      Serial.print("I2C device found at address 0x");
-      if (address < 16)
-        Serial.print("0");
-      Serial.print(address, HEX);
-      Serial.println("  !");
-
-      nDevices++;
-    } else if (error == 4) {
-      Serial.print("Unknow error at address 0x");
-      if (address < 16)
-        Serial.print("0");
-      Serial.println(address, HEX);
-    }
-  }
-  if (nDevices == 0)
-    Serial.println("No I2C devices found\n");
-  else
-    Serial.println("done\n");
-}

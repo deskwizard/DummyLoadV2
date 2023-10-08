@@ -3,7 +3,7 @@
 #include "cooling.h"
 
 // LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
-LedControl display = LedControl(PIN_MOSI, PIN_SCK, DISPLAY_SS, 1);
+LedControl display = LedControl(PIN_MOSI, PIN_SCK, DISPLAY_CS, 1);
 
 // Needs it global since we want to reset it for "immediate" display update
 // when we are adjusting the flashing digits, else we skip "increasing the
@@ -74,7 +74,7 @@ void handleDisplay() {
 
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
 
-    // debug 
+    // debug
     printTemperature();
 
     if (getAlarmFlag()) {
