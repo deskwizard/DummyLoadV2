@@ -131,7 +131,7 @@ void handleInputs() {
     Serial.print("Range switch: ");
     Serial.println(rangeSwitchState);
     // digitalWrite(pinRangeRelay, rangeSwitchState);
-    if (enableSwitchState == SW_DOWN) {
+    if (rangeSwitchState == SW_DOWN) {
       setOutputRange(!getOutputRange());
     }
   }
