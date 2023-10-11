@@ -3,8 +3,8 @@
 
 #include "defines.h"
 
-#define EN_SW_DOWN false
-#define EN_SW_UP true
+#define SW_DOWN false
+#define SW_UP true
 
 void configureInputs();
 void configureTimer();

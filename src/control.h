@@ -16,6 +16,8 @@
 void configureControls();
 void setOutputState(bool state);
 bool getOutputState();
+void setOutputRange(bool value);
+bool getOutputRange();
 void setAlarm(uint8_t alarmType);
 void clearAlarm();
 bool getAlarmFlag();

@@ -85,7 +85,7 @@ void handleInputs() {
 
     static uint8_t counter = 3; // For rollover purposes (??)
 
-    if (encoderSwitchState == EN_SW_DOWN) {
+    if (encoderSwitchState == SW_DOWN) {
 
       if (getAlarmFlag()) {
         clearAlarm();
@@ -116,7 +116,7 @@ void handleInputs() {
     Serial.println(enableSwitchState);
     enableSwitchLastState = enableSwitchState;
 
-    if (enableSwitchState == EN_SW_DOWN) {
+    if (enableSwitchState == SW_DOWN) {
       if (getOutputState()) {
         setOutputState(OUTPUT_OFF);
       } else if (!getOutputState() && !getAlarmFlag()) {
@@ -126,10 +126,14 @@ void handleInputs() {
   }
 
   if (rangeSwitchState != rangeSwitchLastState) {
+    rangeSwitchLastState = rangeSwitchState;
+
     Serial.print("Range switch: ");
     Serial.println(rangeSwitchState);
-    digitalWrite(pinRangeRelay, rangeSwitchState);
-    rangeSwitchLastState = rangeSwitchState;
+    // digitalWrite(pinRangeRelay, rangeSwitchState);
+    if (enableSwitchState == SW_DOWN) {
+      setOutputRange(!getOutputRange());
+    }
   }
 }
 

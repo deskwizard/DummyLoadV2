@@ -4,9 +4,10 @@
 /*
     Currently Free:
         12 (MISO, not used for display)
-        A2
         A3
-        A6 Analog only (fan tach charge cap something?)
+        A4
+        A5
+        A7 Analog only
 */
 
 // TX   0
@@ -15,8 +16,8 @@
 #define pinFanPWM 3
 #define pinFanEnable 4
 
-#define pinEnableRelay A0
-#define pinRangeRelay A1
+#define pinEnableRelay A1
+#define pinRangeRelay A2
 
 #define pinRangeSwitch 5
 #define pinOutputEnableSwitch 6
@@ -24,18 +25,18 @@
 #define pinEncoderA 8
 #define pinEncoderB 9
 
-#define DAC_CS A3
+
 #define DISPLAY_CS 10
 #define PIN_MOSI 11
-//#define PIN_MISO     12      (not used for display)
+#define PIN_MISO     12      //(not used for display)
 #define PIN_SCK 13
-
+#define DAC_CS A0
 
 
 // i²c SCK      A4
 // i²c SCL      A5
 
-#define pinNTC A7
+#define pinNTC A6
 
 //  Signal     Pin    Display wire
 // SPI SS       10      (Yellow)

@@ -7,17 +7,18 @@ MCP4922 DAC;
 
 uint16_t outputCurrent = 0;
 bool outputEnabled = false;
+bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
 float VREF = 4.096;
 
 void setVref(float value) { VREF = value; }
 
 void configureControls() {
-
-  DAC.begin(A3); // Custom CS pin
-  setDAC(0);
-  DAC.shutdown(false);
-
+  /*
+    DAC.begin(A3); // Custom CS pin
+    setDAC(0);
+    DAC.shutdown(false);
+  */
   pinMode(pinEnableRelay, OUTPUT);
   pinMode(pinRangeRelay, OUTPUT);
   digitalWrite(pinEnableRelay, LOW);
@@ -33,6 +34,13 @@ void setOutputState(bool state) {
 }
 
 bool getOutputState() { return outputEnabled; }
+
+void setOutputRange(bool value) {
+  outputRange = value;
+  digitalWrite(pinRangeRelay, outputRange);
+}
+
+bool getOutputRange() { return outputRange; }
 
 void setAlarm(uint8_t alarmType) {
   alarmTriggeredFlag = true;
@@ -72,7 +80,8 @@ void setCurrent(uint16_t current) {
   // ages to figure it out if I ever have to look at this again.
   float value = (float(current) + 0.5) / 1000.0;
   uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
-  setDAC(outputCode);
+
+  // setDAC(outputCode);
 
   displayValue(outputCurrent);
 
