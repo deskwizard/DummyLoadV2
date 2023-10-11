@@ -25,7 +25,6 @@
 #include "display.h"
 #include "input.h"
 
-void testDAC();
 void handleSerialInput();
 void flashDebugLED();
 
@@ -42,7 +41,6 @@ void setup() {
   configureControls();
   configureCooling();
   configureInputs();
-
 }
 
 void loop() {
@@ -51,26 +49,6 @@ void loop() {
   handleInputs();
   handleDisplay();
   handleSerialInput();
-}
-
-void testDAC() {
-
-  uint32_t currentMillis = millis();
-  static uint32_t previousMillis = 0;
-  static uint16_t value = 0;
-
-  if ((uint32_t)(currentMillis - previousMillis) >= 2000) {
-
-    if (value < 1000) {
-      value = value + 100;
-      setCurrent(value);
-    } else {
-      value = 0;
-      setCurrent(value);
-    }
-
-    previousMillis = currentMillis;
-  }
 }
 
 void handleSerialInput() {
@@ -139,7 +117,7 @@ void handleSerialInput() {
     }
   }
 } /*
- 
+
  }
  void flashDebugLED() {
 

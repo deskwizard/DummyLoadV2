@@ -44,7 +44,8 @@ void handleCooling() {
 
     else if (fanEnabled) {
 
-      if (!getOutputState() && getTemperature() <= FAN_OFF_THRESHOLD) {
+      if (!getOutputState() && getTemperature() <= FAN_OFF_THRESHOLD &&
+          fanControlMode == FAN_CTRL_AUTO) {
         Serial.println("Output off and cooled down");
         setFanState(false);
         return;

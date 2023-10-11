@@ -3,7 +3,6 @@
 
 #include "defines.h"
 
-//#define VREF 4.405f
 #define MAX_CURRENT 4000
 
 #define OUTPUT_ON HIGH
@@ -24,5 +23,6 @@ bool getAlarmFlag();
 void setCurrent(uint16_t current);
 void setDAC(uint16_t value);
 uint16_t getCurrent();
+void testDAC();
 
 #endif

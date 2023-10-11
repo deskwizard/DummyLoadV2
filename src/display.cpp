@@ -23,6 +23,9 @@ void configureDisplay() {
   display.setIntensity(0, INTENSITY_DEFAULT);
   display.clearDisplay(0);
 
+  displayDashes();
+  delay(500);
+
   displayValue(getCurrent());
 }
 

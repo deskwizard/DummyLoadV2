@@ -1,5 +1,6 @@
 #include "control.h"
 #include "MCP4922.h"
+#include "SPI.h"
 #include "cooling.h"
 #include "display.h"
 
@@ -14,11 +15,10 @@ float VREF = 4.096;
 void setVref(float value) { VREF = value; }
 
 void configureControls() {
-  /*
-    DAC.begin(A3); // Custom CS pin
-    setDAC(0);
-    DAC.shutdown(false);
-  */
+
+  DAC.begin(DAC_CS); // Custom CS pin
+  DAC.shutdown(false);
+
   pinMode(pinEnableRelay, OUTPUT);
   pinMode(pinRangeRelay, OUTPUT);
   digitalWrite(pinEnableRelay, LOW);
@@ -35,11 +35,12 @@ void setOutputState(bool state) {
 
 bool getOutputState() { return outputEnabled; }
 
-void setOutputRange(bool value) {
-  outputRange = value;
-  digitalWrite(pinRangeRelay, outputRange);
+void setOutputRange(bool state) {
+  outputRange = state;
+  digitalWrite(pinRangeRelay, state);
+  Serial.print("Output Range changed to: ");
+  Serial.println(state);
 }
-
 bool getOutputRange() { return outputRange; }
 
 void setAlarm(uint8_t alarmType) {
@@ -81,7 +82,7 @@ void setCurrent(uint16_t current) {
   float value = (float(current) + 0.5) / 1000.0;
   uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
 
-  // setDAC(outputCode);
+  setDAC(outputCode);
 
   displayValue(outputCurrent);
 
@@ -93,7 +94,9 @@ void setCurrent(uint16_t current) {
 
 void setDAC(uint16_t output_value) {
 
+  // SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
   DAC.setDAC(CHAN_A, output_value);
+  // SPI.endTransaction();
 
   Serial.print("DAC output: ");
   Serial.print(output_value);
@@ -101,3 +104,43 @@ void setDAC(uint16_t output_value) {
 }
 
 uint16_t getCurrent() { return outputCurrent; }
+
+void testDAC() {
+
+  static uint16_t out_a = 0;
+  static uint16_t out_b = 0;
+
+  unsigned long currentMillis = millis(); // Get snapshot of time
+  static unsigned long previousMillis =
+      0; // Tracks the time since last event fired
+
+  if ((unsigned long)(currentMillis - previousMillis) >= 250) {
+
+    if (out_a < 4095) {
+      out_a = out_a + 10;
+    } else {
+      out_a = 0;
+    }
+
+    DAC.setDAC(CHAN_A, out_a);
+
+    Serial.print("A: ");
+    Serial.print(out_a);
+    Serial.print(" ");
+    Serial.println(float(4096 / (VREF * 1000)) + 1 * out_a);
+
+    if (out_b < 4095) {
+      out_b = out_b + 25;
+    } else {
+      out_b = 0;
+    }
+
+    DAC.setDAC(CHAN_B, out_b);
+    Serial.print("B: ");
+    Serial.println(out_b);
+
+    Serial.println();
+
+    previousMillis = currentMillis;
+  }
+}
