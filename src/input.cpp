@@ -45,6 +45,14 @@ void handleInputs() {
 
   if (currentEncoderPosition != lastEncoderPosition) {
 
+    if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
+      Serial.println("Encoder +");
+    }
+
+    if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
+        Serial.println("Encoder -");
+    }
+
     if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
 
       if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {

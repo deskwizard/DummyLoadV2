@@ -10,7 +10,7 @@ uint16_t outputCurrent = 0;
 bool outputEnabled = false;
 bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
-float VREF = 4.096;
+float VREF = 4.098;
 
 void setVref(float value) { VREF = value; }
 

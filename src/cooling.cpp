@@ -58,10 +58,11 @@ void handleCooling() {
       if (fanRPM == 0 && !getAlarmFlag()) {
         setAlarm(ALARM_FAN_FAIL);
       }
-
-      Serial.print("RPM: ");
-      Serial.println(fanRPM);
-      Serial.println();
+      /*
+            Serial.print("RPM: ");
+            Serial.println(fanRPM);
+            Serial.println();
+            */
     }
     // Start fan
     else if (getTemperature() >= FAN_ON_THRESHOLD && !fanEnabled &&

@@ -9,7 +9,7 @@
 #define NTC_READ_COUNT 50
 
 // In celcius
-#define OVERTEMP_THRESHOLD 55
+#define OVERTEMP_THRESHOLD 80
 #define FAN_ON_THRESHOLD 35
 #define FAN_OFF_THRESHOLD 30
 #define FAN_MIN_PWM 85
@@ -43,7 +43,7 @@ uint8_t getTemperature();
 void printTemperature();
 
 // Constants for abalog read value to degrees C conversion
-#define R1 10000
+#define R1 9850
 #define C1 1.009249522e-03f
 #define C2 2.378405444e-04f
 #define C3 2.019202697e-07f
