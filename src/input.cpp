@@ -50,10 +50,12 @@ void handleInputs() {
     }
 
     if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
-        Serial.println("Encoder -");
+      Serial.println("Encoder -");
     }
 
     if (getDisplayMode() == DISPLAY_MODE_SET && !getAlarmFlag()) {
+
+      resetSetModeTimeout();
 
       if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
         Serial.println("Encoder +");
@@ -102,11 +104,15 @@ void handleInputs() {
 
       if (getDisplayMode() == DISPLAY_MODE_VALUE) {
 
+        resetSetModeTimeout();
+
         setDisplayMode(DISPLAY_MODE_SET);
         counter = 3;
         selectSetDigit(counter);
 
       } else if (getDisplayMode() == DISPLAY_MODE_SET) {
+
+        resetSetModeTimeout();
 
         if (getSelectedDigit() != 0) {
           counter--;

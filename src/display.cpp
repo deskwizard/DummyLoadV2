@@ -9,6 +9,7 @@ LedControl display = LedControl(PIN_MOSI, PIN_SCK, DISPLAY_CS, 1);
 // when we are adjusting the flashing digits, else we skip "increasing the
 // digits" because the update rate is way too slow.
 uint32_t previousMillis = 0;
+uint32_t displayTimeoutMillis = 0;
 
 uint8_t displayDigits[4] = {0};
 bool periodValues[4] = {false};
@@ -91,6 +92,13 @@ void handleDisplay() {
     } // Otherwise set mode
     else if (displayMode == DISPLAY_MODE_SET) {
 
+      if (millis() - displayTimeoutMillis >= DISPLAY_SET_TIMEOUT &&
+          displayTimeoutMillis != 0) {
+
+        displayTimeoutMillis = 0;
+        setDisplayMode(DISPLAY_MODE_VALUE);
+      }
+
       for (uint8_t x = 0; x <= 3; x++) {
 
         // We don't have an error and we're in set mode, so flash selected digit
@@ -110,6 +118,12 @@ void handleDisplay() {
     previousMillis = currentMillis;
   }
 }
+
+void resetSetModeTimeout() {
+  displayTimeoutMillis = millis();
+  Serial.println("reset timeout");
+}
+
 void displayAlarmSet(uint8_t alarmType) {
   //
   display.setChar(0, 0, 'E', false);
