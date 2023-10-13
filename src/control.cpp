@@ -36,10 +36,25 @@ void setOutputState(bool state) {
 bool getOutputState() { return outputEnabled; }
 
 void setOutputRange(bool state) {
+
   outputRange = state;
-  digitalWrite(pinRangeRelay, state);
+
   Serial.print("Output Range changed to: ");
-  Serial.println(state);
+
+  if (outputRange == RANGE_HIGH) {
+
+    // Switching from low range to high range
+    Serial.println("High");
+
+    // Divide output by 10 so we keep the save output value
+    // setCurrent(getCurrent() / 10);
+
+  } else {
+    // switching from high range to low range
+    Serial.println("Low");
+  }
+
+  digitalWrite(pinRangeRelay, state);
 }
 bool getOutputRange() { return outputRange; }
 

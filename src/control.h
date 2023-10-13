@@ -8,6 +8,9 @@
 #define OUTPUT_ON HIGH
 #define OUTPUT_OFF LOW
 
+#define RANGE_LOW 1
+#define RANGE_HIGH 0
+
 #define ALARM_FAN_FAIL 0
 #define ALARM_OVER_TEMP 1
 #define ALARM_OVER_CURRENT 2

@@ -39,6 +39,7 @@ void displayDashes() {
 void displayValue(uint16_t value) {
 
   // Reset the display update timer so it updates ASAP
+  // Todo: That doesn't work as expected...
   previousMillis = 0;
 
   displayDigits[0] = (value / 1000U) % 10;
@@ -63,6 +64,7 @@ void setDisplayMode(bool mode) {
 bool getDisplayMode() { return displayMode; }
 
 void selectSetDigit(uint8_t digit) {
+  // Todo: reset the display update thing here?
   selectedDigit = digit;
   displayValue(getCurrent());
   Serial.print("selected digit: ");
@@ -121,7 +123,7 @@ void handleDisplay() {
 
 void resetSetModeTimeout() {
   displayTimeoutMillis = millis();
-  Serial.println("reset timeout");
+  Serial.println("reset display timeout");
 }
 
 void displayAlarmSet(uint8_t alarmType) {
@@ -129,7 +131,7 @@ void displayAlarmSet(uint8_t alarmType) {
   display.setChar(0, 0, 'E', false);
 
   display.setRow(0, 1, 0b0000101); // 'r'
-  display.setRow(0, 2, 0b0000101); // 'r'
+  display.setRow(0, 2, 0b0000101);
 
   if (alarmType == ALARM_FAN_FAIL) {
     display.setChar(0, 3, 'F', false);
