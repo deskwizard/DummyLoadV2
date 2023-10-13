@@ -28,15 +28,17 @@ void configureInputs() {
   pinMode(pinEncoderA, INPUT_PULLUP);
   pinMode(pinEncoderB, INPUT_PULLUP);
 
+  delay(100); // Wait for inputs to stabilize
+
   // Preload current switch state
   enableSwitchState = digitalRead(pinOutputEnableSwitch);
   enableSwitchLastState = enableSwitchState;
 
   rangeSwitchState = digitalRead(pinRangeSwitch);
-  enableSwitchLastState = rangeSwitchState;
+  rangeSwitchLastState = rangeSwitchState;
 
   encoderSwitchState = digitalRead(pinEncoderSwitch);
-  rangeSwitchLastState = encoderSwitchState;
+  encoderSwitchLastState = encoderSwitchState;
 
   configureTimer();
 }
@@ -48,7 +50,6 @@ void handleInputs() {
     if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
       Serial.println("Encoder +");
     }
-
     if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
       Serial.println("Encoder -");
     }
@@ -58,7 +59,7 @@ void handleInputs() {
       resetSetModeTimeout();
 
       if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
-        Serial.println("Encoder +");
+        // Serial.println("Encoder +");
 
         if (getCurrent() + encoderStep[getSelectedDigit()] >= MAX_CURRENT) {
           setCurrent(MAX_CURRENT);
@@ -67,7 +68,7 @@ void handleInputs() {
         }
 
       } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
-        Serial.println("Encoder -");
+        // Serial.println("Encoder -");
 
         int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
 
@@ -89,11 +90,12 @@ void handleInputs() {
   } // encoders
 
   if (encoderSwitchState != encoderSwitchLastState) {
+
     Serial.print("Encoder switch: ");
     Serial.println(encoderSwitchState);
     encoderSwitchLastState = encoderSwitchState;
 
-    static uint8_t counter = 3; // For rollover purposes (??)
+    static uint8_t counter = 3; // For "rollover" purposes
 
     if (encoderSwitchState == SW_DOWN) {
 
