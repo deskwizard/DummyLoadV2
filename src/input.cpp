@@ -18,7 +18,7 @@ bool encoderSwitchLastState;
 
 bool lastDigit = 0;
 
-const uint16_t encoderStep[4] = {1000, 100, 10, 1};
+const uint16_t encoderStep[2][4] = {{1000, 100, 10, 1}, {666, 1000, 100, 10}};
 
 void configureInputs() {
 
@@ -61,18 +61,19 @@ void handleInputs() {
       resetSetModeTimeout();
 
       if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
-        // Serial.println("Encoder +");
 
-        if (getCurrent() + encoderStep[getSelectedDigit()] >= MAX_CURRENT) {
+        if (getCurrent() + encoderStep[getOutputRange()][getSelectedDigit()] >=
+            MAX_CURRENT) {
           setCurrent(MAX_CURRENT);
         } else {
-          setCurrent(getCurrent() + encoderStep[getSelectedDigit()]);
+          setCurrent(getCurrent() +
+                     encoderStep[getOutputRange()][getSelectedDigit()]);
         }
 
       } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
-        // Serial.println("Encoder -");
 
-        int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
+        int16_t tempValue =
+            getCurrent() - encoderStep[getOutputRange()][getSelectedDigit()];
 
         Serial.print("get: ");
         Serial.print(getCurrent());
@@ -83,7 +84,8 @@ void handleInputs() {
           Serial.println("Underflow");
           setCurrent(0);
         } else {
-          setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
+          setCurrent(getCurrent() -
+                     encoderStep[getOutputRange()][getSelectedDigit()]);
         }
       }
     }
@@ -118,26 +120,14 @@ void handleInputs() {
 
         resetSetModeTimeout();
 
-                if (getSelectedDigit() != lastDigit) {
-                  counter--;
-                  selectSetDigit(counter);
-                } else {
-                  counter = 3;
-                  selectSetDigit(counter);
-                  //setDisplayMode(DISPLAY_MODE_VALUE);
-                }
-
-        /*
-                if (getSelectedDigit() != 0) {
-                  counter--;
-                  selectSetDigit(counter);
-                } else {
-                  counter = 3;
-                  selectSetDigit(counter);
-                  //setDisplayMode(DISPLAY_MODE_VALUE);
-                }
-
-                */
+        if (getSelectedDigit() != lastDigit) {
+          counter--;
+          selectSetDigit(counter);
+        } else {
+          counter = 3;
+          selectSetDigit(counter);
+          // setDisplayMode(DISPLAY_MODE_VALUE);
+        }
       }
     }
   }

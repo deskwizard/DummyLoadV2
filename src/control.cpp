@@ -47,7 +47,7 @@ void setOutputRange(bool state) {
     Serial.println("High");
 
     // Divide output by 10 so we keep the save output value
-    // setCurrent(getCurrent() / 10);
+    setCurrent(getCurrent() / 10);
 
   } else {
     // switching from high range to low range
@@ -56,6 +56,7 @@ void setOutputRange(bool state) {
 
   digitalWrite(pinRangeRelay, state);
 }
+
 bool getOutputRange() { return outputRange; }
 
 void setAlarm(uint8_t alarmType) {

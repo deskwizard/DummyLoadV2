@@ -42,6 +42,10 @@ void displayValue(uint16_t value) {
   // Todo: That doesn't work as expected...
   previousMillis = 0;
 
+  if (getOutputRange() == RANGE_LOW) {
+    value = value / 10;
+  }
+
   displayDigits[0] = (value / 1000U) % 10;
   displayDigits[1] = (value / 100U) % 10;
   displayDigits[2] = (value / 10U) % 10;
@@ -81,7 +85,7 @@ void handleDisplay() {
   if ((uint32_t)(currentMillis - previousMillis) >= DISPLAY_UPDATE_TIME) {
 
     // debug
-    printTemperature();
+    // printTemperature();
 
     if (getAlarmFlag()) {
       if (displayIntensity) {
