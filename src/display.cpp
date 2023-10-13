@@ -59,9 +59,13 @@ void displayValue(uint16_t value) {
 
 void setDisplayMode(bool mode) {
   displayMode = mode;
-  Serial.println(mode);
+  Serial.print("Changing display mode to: ");
+
   if (displayMode == DISPLAY_MODE_VALUE) {
     displayValue(getCurrent());
+    Serial.println("value");
+  } else {
+    Serial.println("set");
   }
 }
 
@@ -103,6 +107,7 @@ void handleDisplay() {
 
         displayTimeoutMillis = 0;
         setDisplayMode(DISPLAY_MODE_VALUE);
+        return;
       }
 
       for (uint8_t x = 0; x <= 3; x++) {
