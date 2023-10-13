@@ -16,6 +16,8 @@ uint8_t lastEncoderPosition = 0;
 volatile bool encoderSwitchState;
 bool encoderSwitchLastState;
 
+bool lastDigit = 0;
+
 const uint16_t encoderStep[4] = {1000, 100, 10, 1};
 
 void configureInputs() {
@@ -116,13 +118,26 @@ void handleInputs() {
 
         resetSetModeTimeout();
 
-        if (getSelectedDigit() != 0) {
-          counter--;
-          selectSetDigit(counter);
-        } else {
-          counter = 3;
-          setDisplayMode(DISPLAY_MODE_VALUE);
-        }
+                if (getSelectedDigit() != lastDigit) {
+                  counter--;
+                  selectSetDigit(counter);
+                } else {
+                  counter = 3;
+                  selectSetDigit(counter);
+                  //setDisplayMode(DISPLAY_MODE_VALUE);
+                }
+
+        /*
+                if (getSelectedDigit() != 0) {
+                  counter--;
+                  selectSetDigit(counter);
+                } else {
+                  counter = 3;
+                  selectSetDigit(counter);
+                  //setDisplayMode(DISPLAY_MODE_VALUE);
+                }
+
+                */
       }
     }
   }
@@ -149,6 +164,9 @@ void handleInputs() {
     // digitalWrite(pinRangeRelay, rangeSwitchState);
     if (rangeSwitchState == SW_DOWN) {
       setOutputRange(!getOutputRange());
+
+      // here
+      lastDigit = getOutputRange();
     }
   }
 }
