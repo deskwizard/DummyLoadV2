@@ -18,7 +18,7 @@ bool encoderSwitchLastState;
 
 bool lastDigit = 0;
 
-const uint16_t encoderStep[2][4] = {{1000, 100, 10, 1}, {666, 1000, 100, 10}};
+const uint16_t encoderStep[4] = {1000, 100, 10, 1};
 
 void configureInputs() {
 
@@ -62,18 +62,15 @@ void handleInputs() {
 
       if ((currentEncoderPosition == 3 && lastEncoderPosition == 1)) {
 
-        if (getCurrent() + encoderStep[getOutputRange()][getSelectedDigit()] >=
-            MAX_CURRENT) {
-          setCurrent(MAX_CURRENT);
+        if (getCurrent() + encoderStep[getSelectedDigit()] >= getMaxCurrent()) {
+          setCurrent(getMaxCurrent());
         } else {
-          setCurrent(getCurrent() +
-                     encoderStep[getOutputRange()][getSelectedDigit()]);
+          setCurrent(getCurrent() + encoderStep[getSelectedDigit()]);
         }
 
       } else if ((currentEncoderPosition == 2 && lastEncoderPosition == 0)) {
 
-        int16_t tempValue =
-            getCurrent() - encoderStep[getOutputRange()][getSelectedDigit()];
+        int16_t tempValue = getCurrent() - encoderStep[getSelectedDigit()];
 
         Serial.print("get: ");
         Serial.print(getCurrent());
@@ -84,8 +81,7 @@ void handleInputs() {
           Serial.println("Underflow");
           setCurrent(0);
         } else {
-          setCurrent(getCurrent() -
-                     encoderStep[getOutputRange()][getSelectedDigit()]);
+          setCurrent(getCurrent() - encoderStep[getSelectedDigit()]);
         }
       }
     }
@@ -151,11 +147,8 @@ void handleInputs() {
 
     Serial.print("Range switch: ");
     Serial.println(rangeSwitchState);
-    // digitalWrite(pinRangeRelay, rangeSwitchState);
     if (rangeSwitchState == SW_DOWN) {
       setOutputRange(!getOutputRange());
-
-      // here
       lastDigit = getOutputRange();
     }
   }
@@ -194,29 +187,4 @@ void configureTimer() {
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
   sei(); // allow interrupts
-  /*
-    // TIMER 2 for interrupt frequency 1000 Hz:
-    cli(); // Disable interrupts
-
-    // Clear TCCR2A and TCCR2B
-    TCCR2A = 0;
-    TCCR2B = 0;
-
-    // Initialize counter value to 0
-    TCNT2 = 0;
-
-    // Set compare match register for 1000 Hz increments
-    OCR2A = 249; // = 8000000 / (32 * 1000) - 1 (must be <256)
-
-    // Set CTC mode
-    TCCR2B |= (1 << WGM21);
-
-    // Prescaler /32
-    TCCR2B |= (0 << CS22) | (1 << CS21) | (1 << CS20);
-
-    // Enable timer compare interrupt
-    TIMSK2 |= (1 << OCIE2A);
-
-    sei(); // Re-enable interrupts
-    */
 }

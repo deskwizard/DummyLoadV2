@@ -26,6 +26,7 @@ bool getAlarmFlag();
 void setCurrent(uint16_t current);
 void setDAC(uint16_t value);
 uint16_t getCurrent();
+uint16_t getMaxCurrent();
 void testDAC();
 
 #endif

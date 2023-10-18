@@ -14,9 +14,6 @@
             it's the same millis() stuff.
       - Inhibit output enable until cooled down on overtemp
       - Move timer stuff to a separate file
-      - Fan PWM *
-      - Fan Tach *
-      - Timeout adjustement mode after X seconds
 */
 
 #include "control.h"
@@ -41,6 +38,7 @@ void setup() {
   configureControls();
   configureCooling();
   configureInputs();
+  
 }
 
 void loop() {

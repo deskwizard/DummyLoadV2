@@ -28,7 +28,6 @@ void configureControls() {
 void setOutputState(bool state) {
   digitalWrite(pinEnableRelay, state);
   outputEnabled = state;
-  // setFanState(state);
   Serial.print("Output state changed to: ");
   Serial.println(state);
 }
@@ -46,13 +45,17 @@ void setOutputRange(bool state) {
     // Switching from low range to high range
     Serial.println("High");
 
-    // Divide output by 10 so we keep the save output value
-    setCurrent(getCurrent() / 10);
-
   } else {
     // switching from high range to low range
     Serial.println("Low");
+
+    if (outputCurrent > getMaxCurrent()) {
+      outputCurrent = getMaxCurrent();
+    }
   }
+
+  // here
+  setCurrent(outputCurrent);
 
   digitalWrite(pinRangeRelay, state);
 }
@@ -98,6 +101,10 @@ void setCurrent(uint16_t current) {
   float value = (float(current) + 0.5) / 1000.0;
   uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
 
+  if (outputRange == RANGE_LOW) {
+    outputCode = outputCode * 10;
+  }
+
   setDAC(outputCode);
 
   displayValue(outputCurrent);
@@ -110,9 +117,7 @@ void setCurrent(uint16_t current) {
 
 void setDAC(uint16_t output_value) {
 
-  // SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
   DAC.setDAC(CHAN_A, output_value);
-  // SPI.endTransaction();
 
   Serial.print("DAC output: ");
   Serial.print(output_value);
@@ -120,6 +125,14 @@ void setDAC(uint16_t output_value) {
 }
 
 uint16_t getCurrent() { return outputCurrent; }
+
+uint16_t getMaxCurrent() {
+  if (outputRange == RANGE_LOW) {
+    return MAX_CURRENT / 10;
+  } else {
+    return MAX_CURRENT;
+  }
+}
 
 void testDAC() {
 
