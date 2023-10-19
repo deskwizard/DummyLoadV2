@@ -193,7 +193,6 @@ void LedControl::spiTransfer(int addr, volatile byte opcode,
   int offset = addr * 2;
   int maxbytes = maxDevices * 2;
 
-  // SPI.beginTransaction();
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
 
   for (int i = 0; i < maxbytes; i++)

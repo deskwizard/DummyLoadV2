@@ -31,6 +31,7 @@
 #define PIN_MISO     12      //(not used for display)
 #define PIN_SCK 13
 #define DAC_CS A0
+#define ADC_CS A3
 
 
 // i²c SCK      A4

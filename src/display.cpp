@@ -87,6 +87,7 @@ void handleDisplay() {
 
     // debug
     printTemperature();
+    readChannelSE(3);
 
     if (getAlarmFlag()) {
       if (displayIntensity) {

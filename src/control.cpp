@@ -19,6 +19,8 @@ void configureControls() {
   DAC.begin(DAC_CS); // Custom CS pin
   DAC.shutdown(false);
 
+  pinMode(ADC_CS, OUTPUT);
+
   pinMode(pinEnableRelay, OUTPUT);
   pinMode(pinRangeRelay, OUTPUT);
   digitalWrite(pinEnableRelay, LOW);
@@ -132,6 +134,41 @@ uint16_t getMaxCurrent() {
   } else {
     return MAX_CURRENT;
   }
+}
+
+uint16_t readChannelSE(uint8_t channel) {
+
+  Serial.print("Channel ");
+  Serial.print(channel);
+  Serial.print(": ");
+
+  // Start and SE bits always set (D2 is 'don't care' for MCP3302)
+  uint8_t commandByte = 0x18;
+
+  commandByte = commandByte + channel;
+  //  Serial.print("command af: 0b");
+  //  Serial.println(commandByte, BIN);
+
+  digitalWrite(ADC_CS, LOW);
+
+  // Send command byte
+  SPI.transfer(commandByte);
+
+  // Receive high byte and shift to be the high 8 bits
+  uint16_t reading = SPI.transfer(0x00) << 8;
+
+  // Receive low byte into lower 8 bits
+  reading |= SPI.transfer(0x00);
+
+  digitalWrite(ADC_CS, HIGH);
+
+  uint16_t calculated = uint16_t((float)reading * (VREF / 4.096) + 0.5);
+
+  Serial.print(" ");
+  Serial.println(calculated >> 1);
+  Serial.println();
+
+  return calculated;
 }
 
 void testDAC() {
