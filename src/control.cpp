@@ -10,9 +10,6 @@ uint16_t outputCurrent = 0;
 bool outputEnabled = false;
 bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
-float VREF = 4.098;
-
-void setVref(float value) { VREF = value; }
 
 void configureControls() {
 
@@ -20,6 +17,7 @@ void configureControls() {
   DAC.shutdown(false);
 
   pinMode(ADC_CS, OUTPUT);
+  digitalWrite(ADC_CS, HIGH);
 
   pinMode(pinEnableRelay, OUTPUT);
   pinMode(pinRangeRelay, OUTPUT);
@@ -28,8 +26,12 @@ void configureControls() {
 }
 
 void setOutputState(bool state) {
+
   digitalWrite(pinEnableRelay, state);
+
   outputEnabled = state;
+  displayValue(getCurrent());
+
   Serial.print("Output state changed to: ");
   Serial.println(state);
 }
@@ -56,7 +58,6 @@ void setOutputRange(bool state) {
     }
   }
 
-  // here
   setCurrent(outputCurrent);
 
   digitalWrite(pinRangeRelay, state);
@@ -67,9 +68,9 @@ bool getOutputRange() { return outputRange; }
 void setAlarm(uint8_t alarmType) {
   alarmTriggeredFlag = true;
 
-  // No matter what, turn output off, set fan to max speed
-  setFanPWM(255); // Shouldn't happen but just in case
+  // No matter what, turn output off, set fan to maximum speed
   setOutputState(OUTPUT_OFF);
+  setFanPWM(255);
 
   displayAlarmSet(alarmType);
 
@@ -164,8 +165,10 @@ uint16_t readChannelSE(uint8_t channel) {
 
   uint16_t calculated = uint16_t((float)reading * (VREF / 4.096) + 0.5);
 
+  calculated = calculated >> 1;
+
   Serial.print(" ");
-  Serial.println(calculated >> 1);
+  Serial.println(calculated);
   Serial.println();
 
   return calculated;
@@ -176,9 +179,8 @@ void testDAC() {
   static uint16_t out_a = 0;
   static uint16_t out_b = 0;
 
-  unsigned long currentMillis = millis(); // Get snapshot of time
-  static unsigned long previousMillis =
-      0; // Tracks the time since last event fired
+  unsigned long currentMillis = millis();
+  static unsigned long previousMillis = 0;
 
   if ((unsigned long)(currentMillis - previousMillis) >= 250) {
 
@@ -210,3 +212,4 @@ void testDAC() {
     previousMillis = currentMillis;
   }
 }
+

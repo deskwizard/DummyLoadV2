@@ -2,7 +2,6 @@
 #include "LedControl.h"
 #include "cooling.h"
 
-// LedControl(int dataPin, int clkPin, int csPin, int numDevices=1);
 LedControl display = LedControl(PIN_MOSI, PIN_SCK, DISPLAY_CS, 1);
 
 // Needs it global since we want to reset it for "immediate" display update
@@ -19,7 +18,7 @@ uint8_t selectedDigit = 0;
 
 void configureDisplay() {
 
-  display.setScanLimit(0, 4);
+  display.setScanLimit(0, 8);
   display.shutdown(0, false);
   display.setIntensity(0, INTENSITY_DEFAULT);
   display.clearDisplay(0);
@@ -31,17 +30,16 @@ void configureDisplay() {
 }
 
 void displayDashes() {
-  for (uint8_t x = 0; x <= 3; x++) {
+  for (uint8_t x = 0; x <= 7; x++) {
     display.setChar(0, x, '-', false);
   }
 }
 
 void displayValue(uint16_t value) {
 
-  // Reset the display update timer so it updates ASAP
+  // Reset the display update timer so it updates ASAP.
   // Todo: That doesn't work as expected...
   previousMillis = 0;
-
 
   displayDigits[0] = (value / 1000U) % 10;
   displayDigits[1] = (value / 100U) % 10;
@@ -87,7 +85,9 @@ void handleDisplay() {
 
     // debug
     printTemperature();
-    readChannelSE(3);
+    //readChannelSE(ADC_CURRENT_CHANNEL);
+    readChannelSE(ADC_VOLTAGE_CHANNEL);
+    
 
     if (getAlarmFlag()) {
       if (displayIntensity) {
@@ -97,9 +97,16 @@ void handleDisplay() {
       }
       displayIntensity = !displayIntensity;
 
-    } // Otherwise set mode
+    }
+    // If the output is enabled and we're not in set mode.
+    else if (displayMode == DISPLAY_MODE_VALUE && getOutputState() == true) {
+      uint16_t value = readChannelSE(ADC_CURRENT_CHANNEL);
+      displayValue(value);
+    }
+    // Otherwise we're in set mode.
     else if (displayMode == DISPLAY_MODE_SET) {
 
+      // Exit set mode after 'DISPLAY_SET_TIMEOUT' seconds.
       if (millis() - displayTimeoutMillis >= DISPLAY_SET_TIMEOUT &&
           displayTimeoutMillis != 0) {
 
@@ -110,8 +117,8 @@ void handleDisplay() {
 
       for (uint8_t x = 0; x <= 3; x++) {
 
-        // We don't have an error and we're in set mode, so flash selected digit
-        // (displayIntensity is just reused here)
+        // We don't have an error and we're in set mode, so flash selected
+        // digit. (displayIntensity is just reused here).
         if (x == selectedDigit) {
           if (displayIntensity) {
             display.setDigit(0, x, displayDigits[x], periodValues[x]);

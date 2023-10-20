@@ -3,7 +3,12 @@
 
 #include "defines.h"
 
+#define VREF 4.098f
+
 #define MAX_CURRENT 4000
+
+#define ADC_VOLTAGE_CHANNEL 0
+#define ADC_CURRENT_CHANNEL 3
 
 #define OUTPUT_ON HIGH
 #define OUTPUT_OFF LOW
