@@ -7,7 +7,6 @@
 #define SW_UP true
 
 void configureInputs();
-void configureTimer();
 void handleInputs();
 void inputTimerInterrupt();
 

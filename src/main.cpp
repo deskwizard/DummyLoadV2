@@ -1,19 +1,18 @@
 /*
   Notes:
-      - The NTC read is in the input timer interrupt for now
 
 
   Ideas:
 
     - Change fan tach routine to save last pulse and trigger if > timeout
-    (- OC alarm if we get there)
+    - OC alarm if we get there
 
   Todo:
       - Immediately display the underscore when we change digit set
           - now it does, but it messes up with the blinking since
             it's the same millis() stuff.
       - Inhibit output enable until cooled down on overtemp
-      - Move timer stuff to a separate file
+      * Move timer stuff to a separate file
 */
 
 #include "control.h"
@@ -21,6 +20,7 @@
 #include "defines.h"
 #include "display.h"
 #include "input.h"
+#include "timers.h"
 
 void handleSerialInput();
 void flashDebugLED();
@@ -38,6 +38,7 @@ void setup() {
   configureControls();
   configureCooling();
   configureInputs();
+  configureTimer();
   
 }
 

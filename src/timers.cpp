@@ -1,0 +1,56 @@
+#include "timers.h"
+#include "input.h"
+#include "cooling.h"
+
+extern volatile bool enableSwitchState;
+extern bool enableSwitchLastState;
+
+extern volatile bool rangeSwitchState;
+extern bool rangeSwitchLastState;
+
+extern volatile bool encoderSwitchState;
+extern volatile uint8_t currentEncoderPosition;
+
+void configureTimer() {
+  // TIMER 1 for interrupt frequency 1000 Hz:
+
+  cli();      // Disable interrupts
+  TCCR1A = 0; // Set entire TCCR1A register to 0
+  TCCR1B = 0; // Same for TCCR1B
+  TCNT1 = 0;  // Initialize counter value to 0
+
+  // Set compare match register for 1000 Hz increments
+  OCR1A = 15999; // = 16000000 / (1 * 1000) - 1 (must be <65536)
+
+  // Turn on CTC mode
+  TCCR1B |= (1 << WGM12);
+
+  // Set CS12, CS11 and CS10 bits for 1 prescaler
+  TCCR1B |= (0 << CS12) | (0 << CS11) | (1 << CS10);
+
+  // Enable timer compare interrupt
+  TIMSK1 |= (1 << OCIE1A);
+
+  sei(); // Enable interrupts
+}
+
+ISR(TIMER1_COMPA_vect) {
+
+  
+currentEncoderPosition = 0;
+
+if (!digitalRead(pinEncoderA)) {
+  currentEncoderPosition |= (1 << 1);
+}
+if (!digitalRead(pinEncoderB)) {
+  currentEncoderPosition |= (1 << 0);
+}
+
+encoderSwitchState = digitalRead(pinEncoderSwitch);
+enableSwitchState = digitalRead(pinOutputEnableSwitch);
+rangeSwitchState = digitalRead(pinRangeSwitch);
+
+// Testing
+readNTC();
+
+}
