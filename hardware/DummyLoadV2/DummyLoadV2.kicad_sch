@@ -13,14 +13,14 @@
   )
 
 
-  (sheet (at 57.15 109.22) (size 74.93 22.86) (fields_autoplaced)
+  (sheet (at 55.88 78.74) (size 74.93 22.86) (fields_autoplaced)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))
     (uuid 02c25695-dda5-4c86-9b7a-9696a2c46048)
-    (property "Sheetname" "Digital" (at 57.15 108.5084 0)
+    (property "Sheetname" "Digital" (at 55.88 78.0284 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheetfile" "DummyLoadV2_Digital.kicad_sch" (at 57.15 132.6646 0)
+    (property "Sheetfile" "DummyLoadV2_Digital.kicad_sch" (at 55.88 102.1846 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
@@ -30,31 +30,14 @@
     )
   )
 
-  (sheet (at 57.15 73.66) (size 74.93 22.86) (fields_autoplaced)
-    (stroke (width 0.1524) (type solid))
-    (fill (color 0 0 0 0.0000))
-    (uuid 0ba57309-dd0e-45bb-b92d-a74581968d0a)
-    (property "Sheetname" "Power Supply" (at 57.15 72.9484 0)
-      (effects (font (size 1.27 1.27)) (justify left bottom))
-    )
-    (property "Sheetfile" "DummyLoadV2_PowerSupply.kicad_sch" (at 57.15 97.1046 0)
-      (effects (font (size 1.27 1.27)) (justify left top))
-    )
-    (instances
-      (project "DummyLoadV2"
-        (path "/154f9743-c032-4045-ba5f-d157ba47940d" (page "3"))
-      )
-    )
-  )
-
-  (sheet (at 57.15 38.1) (size 74.93 22.86) (fields_autoplaced)
+  (sheet (at 56.515 38.1) (size 74.93 22.86) (fields_autoplaced)
     (stroke (width 0.1524) (type solid))
     (fill (color 0 0 0 0.0000))
     (uuid 11a9cbca-d036-47fd-b9fb-7165d9c4d663)
-    (property "Sheetname" "Output Stage" (at 57.15 37.3884 0)
+    (property "Sheetname" "Analog" (at 56.515 37.3884 0)
       (effects (font (size 1.27 1.27)) (justify left bottom))
     )
-    (property "Sheetfile" "DummyLoadV2_OutputStage.kicad_sch" (at 57.15 61.5446 0)
+    (property "Sheetfile" "DummyLoadV2_Analog.kicad_sch" (at 56.515 61.5446 0)
       (effects (font (size 1.27 1.27)) (justify left top))
     )
     (instances
