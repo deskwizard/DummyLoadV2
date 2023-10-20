@@ -1,17 +1,9 @@
 #include "timers.h"
-#include "input.h"
 #include "cooling.h"
-
-extern volatile bool enableSwitchState;
-extern bool enableSwitchLastState;
-
-extern volatile bool rangeSwitchState;
-extern bool rangeSwitchLastState;
-
-extern volatile bool encoderSwitchState;
-extern volatile uint8_t currentEncoderPosition;
+#include "input.h"
 
 void configureTimer() {
+
   // TIMER 1 for interrupt frequency 1000 Hz:
 
   cli();      // Disable interrupts
@@ -36,21 +28,18 @@ void configureTimer() {
 
 ISR(TIMER1_COMPA_vect) {
 
-  
-currentEncoderPosition = 0;
+  currentEncoderPosition = 0;
 
-if (!digitalRead(pinEncoderA)) {
-  currentEncoderPosition |= (1 << 1);
-}
-if (!digitalRead(pinEncoderB)) {
-  currentEncoderPosition |= (1 << 0);
-}
+  if (!digitalRead(pinEncoderA)) {
+    currentEncoderPosition |= (1 << 1);
+  }
+  if (!digitalRead(pinEncoderB)) {
+    currentEncoderPosition |= (1 << 0);
+  }
 
-encoderSwitchState = digitalRead(pinEncoderSwitch);
-enableSwitchState = digitalRead(pinOutputEnableSwitch);
-rangeSwitchState = digitalRead(pinRangeSwitch);
+  encoderSwitchState = digitalRead(pinEncoderSwitch);
+  enableSwitchState = digitalRead(pinOutputEnableSwitch);
+  rangeSwitchState = digitalRead(pinRangeSwitch);
 
-// Testing
-readNTC();
-
+  readNTC();
 }
