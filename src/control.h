@@ -32,6 +32,7 @@ void setCurrent(uint16_t current);
 void setDAC(uint16_t value);
 uint16_t getCurrent();
 uint16_t getMaxCurrent();
+uint16_t getVoltage();
 uint16_t readChannelSE(uint8_t channel);
 void testDAC();
 

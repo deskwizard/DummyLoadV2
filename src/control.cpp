@@ -30,7 +30,7 @@ void setOutputState(bool state) {
   digitalWrite(pinEnableRelay, state);
 
   outputEnabled = state;
-  displayValue(getCurrent());
+  displayValue(DISPLAY_MAIN, getCurrent());
 
   Serial.print("Output state changed to: ");
   Serial.println(state);
@@ -110,7 +110,7 @@ void setCurrent(uint16_t current) {
 
   setDAC(outputCode);
 
-  displayValue(outputCurrent);
+  displayValue(DISPLAY_MAIN, outputCurrent);
 
   Serial.print("Output current: ");
   Serial.print(value, 3);
@@ -135,6 +135,17 @@ uint16_t getMaxCurrent() {
   } else {
     return MAX_CURRENT;
   }
+}
+
+uint16_t getVoltage() {
+  uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
+  /*
+  Serial.print("Voltage: ");
+  Serial.print(read);
+  Serial.println("V");
+  Serial.println();
+ */
+  return read;
 }
 
 uint16_t readChannelSE(uint8_t channel) {
@@ -212,4 +223,3 @@ void testDAC() {
     previousMillis = currentMillis;
   }
 }
-

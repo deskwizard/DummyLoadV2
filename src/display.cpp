@@ -10,8 +10,8 @@ LedControl display = LedControl(PIN_MOSI, PIN_SCK, DISPLAY_CS, 1);
 uint32_t previousMillis = 0;
 uint32_t displayTimeoutMillis = 0;
 
-uint8_t displayDigits[4] = {0};
-bool periodValues[4] = {false};
+uint8_t displayDigits[8] = {0};
+bool periodValues[8] = {false};
 
 bool displayMode = DISPLAY_MODE_VALUE;
 uint8_t selectedDigit = 0;
@@ -26,7 +26,8 @@ void configureDisplay() {
   displayDashes();
   delay(500);
 
-  displayValue(getCurrent());
+  displayValue(DISPLAY_MAIN, getCurrent());
+  displayValue(DISPLAY_AUX, 0);
 }
 
 void displayDashes() {
@@ -35,20 +36,34 @@ void displayDashes() {
   }
 }
 
-void displayValue(uint16_t value) {
+void displayValue(bool displayID, uint16_t value) {
 
   // Reset the display update timer so it updates ASAP.
   // Todo: That doesn't work as expected...
   previousMillis = 0;
 
-  displayDigits[0] = (value / 1000U) % 10;
-  displayDigits[1] = (value / 100U) % 10;
-  displayDigits[2] = (value / 10U) % 10;
-  displayDigits[3] = (value / 1U) % 10;
-  periodValues[0] = true;
+  if (displayID == DISPLAY_MAIN) {
+    displayDigits[0] = (value / 1000U) % 10;
+    displayDigits[1] = (value / 100U) % 10;
+    displayDigits[2] = (value / 10U) % 10;
+    displayDigits[3] = (value / 1U) % 10;
+    periodValues[0] = true;
 
-  for (uint8_t x = 0; x <= 3; x++) {
-    display.setDigit(0, x, displayDigits[x], periodValues[x]);
+    for (uint8_t x = 0; x <= 3; x++) {
+      display.setDigit(0, x, displayDigits[x], periodValues[x]);
+    }
+  }
+
+  if (displayID == DISPLAY_AUX) {
+    displayDigits[4] = (value / 1000U) % 10;
+    displayDigits[5] = (value / 100U) % 10;
+    displayDigits[6] = (value / 10U) % 10;
+    displayDigits[7] = (value / 1U) % 10;
+    periodValues[5] = true;
+
+    for (uint8_t x = 4; x <= 7; x++) {
+      display.setDigit(0, x, displayDigits[x], periodValues[x]);
+    }
   }
 }
 
@@ -57,7 +72,7 @@ void setDisplayMode(bool mode) {
   Serial.print("Changing display mode to: ");
 
   if (displayMode == DISPLAY_MODE_VALUE) {
-    displayValue(getCurrent());
+    displayValue(DISPLAY_MAIN, getCurrent());
     Serial.println("value");
   } else {
     Serial.println("set");
@@ -69,7 +84,7 @@ bool getDisplayMode() { return displayMode; }
 void selectSetDigit(uint8_t digit) {
   // Todo: reset the display update thing here?
   selectedDigit = digit;
-  displayValue(getCurrent());
+  displayValue(DISPLAY_MAIN, getCurrent());
   Serial.print("selected digit: ");
   Serial.println(selectedDigit);
 }
@@ -85,9 +100,9 @@ void handleDisplay() {
 
     // debug
     printTemperature();
-    //readChannelSE(ADC_CURRENT_CHANNEL);
-    readChannelSE(ADC_VOLTAGE_CHANNEL);
-    
+    // readChannelSE(ADC_CURRENT_CHANNEL);
+    //readChannelSE(ADC_VOLTAGE_CHANNEL);
+    displayValue(DISPLAY_AUX, getVoltage());
 
     if (getAlarmFlag()) {
       if (displayIntensity) {
@@ -101,7 +116,7 @@ void handleDisplay() {
     // If the output is enabled and we're not in set mode.
     else if (displayMode == DISPLAY_MODE_VALUE && getOutputState() == true) {
       uint16_t value = readChannelSE(ADC_CURRENT_CHANNEL);
-      displayValue(value);
+      displayValue(DISPLAY_MAIN, value);
     }
     // Otherwise we're in set mode.
     else if (displayMode == DISPLAY_MODE_SET) {
@@ -158,5 +173,5 @@ void displayAlarmSet(uint8_t alarmType) {
 
 void displayAlarmClear() {
   display.setIntensity(0, INTENSITY_DEFAULT);
-  displayValue(getCurrent());
+  displayValue(DISPLAY_MAIN, getCurrent());
 }

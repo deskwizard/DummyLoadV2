@@ -12,9 +12,12 @@
 #define INTENSITY_DEFAULT 12
 #define INTENSITY_LOW 4
 
+#define DISPLAY_MAIN 0
+#define DISPLAY_AUX 1
+
 void configureDisplay();
 void displayDashes();
-void displayValue(uint16_t value);
+void displayValue(bool displayID, uint16_t value);
 void setDisplayMode(bool mode);
 bool getDisplayMode();
 void selectSetDigit(uint8_t digit);
