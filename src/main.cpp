@@ -48,6 +48,7 @@ void loop() {
   handleInputs();
   handleDisplay();
   handleSerialInput();
+  handleTimers();
 }
 
 void handleSerialInput() {

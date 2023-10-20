@@ -4,5 +4,6 @@
 #include "defines.h"
 
 void configureTimer();
+void handleTimers();
 
 #endif

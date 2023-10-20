@@ -1,7 +1,5 @@
 #include "cooling.h"
 
-/******** Fan alarm currently disabled ********/
-
 // For debugging
 bool rampDir = false;                // Ramp up or down
 bool fanControlMode = FAN_CTRL_AUTO; // Auto or manual
@@ -13,7 +11,7 @@ uint16_t fanPWM = FAN_MIN_PWM;
 volatile uint32_t tachPulseCount = 0;
 volatile uint16_t fanRPM = 0;
 
-uint16_t total = 0; // NTC running total
+uint16_t temperatureRunningTotal = 0; // NTC running total
 
 void configureCooling() {
 
@@ -114,25 +112,31 @@ void fanTachInterruptHandler() { tachPulseCount++; }
 
 void readNTC() {
 
-  static uint8_t readingIndex = 0; // the index of the current reading
+  static uint8_t readingIndex = 0; // Index of the current reading
+
   static uint16_t readings[NTC_READ_COUNT] = {0};
 
-  total = total - readings[readingIndex];      // subtract the last reading
-  readings[readingIndex] = analogRead(pinNTC); // read from the sensor
-  total = total + readings[readingIndex];      // add the reading to the total
-  readingIndex++; // advance to the next position in the array:
+  // Subtract the last reading
+  temperatureRunningTotal = temperatureRunningTotal - readings[readingIndex];
 
-  // if we're at the end of the array, wrap around to the beginning
+  readings[readingIndex] = analogRead(pinNTC); // Read from the sensor
+
+  // Add the reading to the running total
+  temperatureRunningTotal = temperatureRunningTotal + readings[readingIndex];
+
+  readingIndex++; // Advance to the next position in the array
+
+  // If we're at the end of the array, wrap around to the beginning
   if (readingIndex >= NTC_READ_COUNT) {
     readingIndex = 0;
   }
 }
 
-uint16_t getNTC() { return total / NTC_READ_COUNT; }
+uint16_t getNTC() { return temperatureRunningTotal / NTC_READ_COUNT; }
 
 uint8_t getTemperature() {
 
-  uint16_t Vo = total / NTC_READ_COUNT; // the average
+  uint16_t Vo = temperatureRunningTotal / NTC_READ_COUNT; // the average
 
   float R2 = R1 * (1023.0 / (float)Vo - 1.0);
   float logR2 = log(R2);

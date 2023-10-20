@@ -10,6 +10,8 @@
 #define ADC_VOLTAGE_CHANNEL 0
 #define ADC_CURRENT_CHANNEL 3
 
+#define VOLT_READ_COUNT 20
+
 #define OUTPUT_ON HIGH
 #define OUTPUT_OFF LOW
 
@@ -32,6 +34,7 @@ void setCurrent(uint16_t current);
 void setDAC(uint16_t value);
 uint16_t getCurrent();
 uint16_t getMaxCurrent();
+void readVoltage();
 uint16_t getVoltage();
 uint16_t readChannelSE(uint8_t channel);
 void testDAC();

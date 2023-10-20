@@ -11,6 +11,8 @@ bool outputEnabled = false;
 bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
 
+uint64_t voltageRunningTotal = 0;
+
 void configureControls() {
 
   DAC.begin(DAC_CS); // Custom CS pin
@@ -137,23 +139,38 @@ uint16_t getMaxCurrent() {
   }
 }
 
-uint16_t getVoltage() {
+void readVoltage() {
+
+  static uint8_t readingIndex = 0; // Index of the current reading
+
+  static uint16_t readings[VOLT_READ_COUNT] = {0};
+
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
-  /*
-  Serial.print("Voltage: ");
-  Serial.print(read);
-  Serial.println("V");
-  Serial.println();
- */
-  return read;
+  // Serial.println(read);
+
+  // Subtract the last reading
+  voltageRunningTotal = voltageRunningTotal - readings[readingIndex];
+
+  readings[readingIndex] = read; // Read from the sensor
+
+  // Add the reading to the running total
+  voltageRunningTotal = voltageRunningTotal + readings[readingIndex];
+
+  readingIndex++; // Advance to the next position in the array
+
+  // If we're at the end of the array, wrap around to the beginning
+  if (readingIndex >= VOLT_READ_COUNT) {
+    readingIndex = 0;
+  }
 }
+uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
 
 uint16_t readChannelSE(uint8_t channel) {
-
-  Serial.print("Channel ");
-  Serial.print(channel);
-  Serial.print(": ");
-
+  /*
+    Serial.print("Channel ");
+    Serial.print(channel);
+    Serial.print(": ");
+  */
   // Start and SE bits always set (D2 is 'don't care' for MCP3302)
   uint8_t commandByte = 0x18;
 
@@ -177,11 +194,11 @@ uint16_t readChannelSE(uint8_t channel) {
   uint16_t calculated = uint16_t((float)reading * (VREF / 4.096) + 0.5);
 
   calculated = calculated >> 1;
-
-  Serial.print(" ");
-  Serial.println(calculated);
-  Serial.println();
-
+  /*
+    Serial.print(" ");
+    Serial.println(calculated);
+    Serial.println();
+  */
   return calculated;
 }
 

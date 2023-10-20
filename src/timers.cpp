@@ -2,6 +2,8 @@
 #include "cooling.h"
 #include "input.h"
 
+bool timerNeedHandling = false;
+
 void configureTimer() {
 
   // TIMER 1 for interrupt frequency 1000 Hz:
@@ -41,5 +43,13 @@ ISR(TIMER1_COMPA_vect) {
   enableSwitchState = digitalRead(pinOutputEnableSwitch);
   rangeSwitchState = digitalRead(pinRangeSwitch);
 
-  readNTC();
+  timerNeedHandling = true;
+}
+
+void handleTimers() {
+  if (timerNeedHandling == true) {
+    readVoltage();
+    readNTC();
+    timerNeedHandling = false;
+  }
 }
