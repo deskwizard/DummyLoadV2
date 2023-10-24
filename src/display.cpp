@@ -100,8 +100,7 @@ void handleDisplay() {
 
     // debug
     printTemperature();
-    // readChannelSE(ADC_CURRENT_CHANNEL);
-    //readChannelSE(ADC_VOLTAGE_CHANNEL);
+
     displayValue(DISPLAY_AUX, getVoltage());
 
     if (getAlarmFlag()) {

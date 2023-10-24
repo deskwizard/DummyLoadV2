@@ -166,7 +166,15 @@ void readVoltage() {
   }
 }
 
-uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
+uint16_t getVoltage() { 
+
+  Serial.print("voltage: ");
+  Serial.print(uint16_t(voltageRunningTotal / VOLT_READ_COUNT));
+  Serial.println();
+
+  return voltageRunningTotal / VOLT_READ_COUNT; 
+  
+  }
 
 uint16_t readChannelSE(uint8_t channel) {
   /*
