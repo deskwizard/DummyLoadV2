@@ -16,7 +16,9 @@ uint64_t voltageRunningTotal = 0;
 void configureControls() {
 
   DAC.begin(DAC_CS); // Custom CS pin
-  DAC.shutdown(false);
+
+  // Enable channel A, leave channel B in shutdown
+  DAC.shutdown(CHAN_A, false);
 
   pinMode(ADC_CS, OUTPUT);
   digitalWrite(ADC_CS, HIGH);
@@ -163,6 +165,7 @@ void readVoltage() {
     readingIndex = 0;
   }
 }
+
 uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
 
 uint16_t readChannelSE(uint8_t channel) {
