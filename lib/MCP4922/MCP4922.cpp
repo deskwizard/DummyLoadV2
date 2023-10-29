@@ -68,7 +68,6 @@ void MCP4922::setDAC(bool channel, uint16_t desired_value) {
 void MCP4922::update_DAC(bool channel) {
 
   digitalWrite(CS_Pin, LOW); // take the CS pin low to select the chip:
-  delay(10);
 
   bitClear(data_word[channel], SHDN_BIT);
   bitClear(data_word[channel], GAIN_BIT);
@@ -79,6 +78,5 @@ void MCP4922::update_DAC(bool channel) {
   SPI.transfer(data_word[channel] >> 8);
   SPI.transfer(data_word[channel] & 0xFF);
 
-  delay(10);
   digitalWrite(CS_Pin, HIGH); // take the CS pin high to de-select the chip:
 }
