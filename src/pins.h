@@ -28,7 +28,7 @@
 
 #define DISPLAY_CS 10
 #define PIN_MOSI 11
-#define PIN_MISO     12      //(not used for display)
+#define PIN_MISO 12
 #define PIN_SCK 13
 #define DAC_CS A0
 #define ADC_CS A3

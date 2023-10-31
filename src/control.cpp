@@ -123,9 +123,7 @@ void setCurrent(uint16_t current) {
 }
 
 void setDAC(uint16_t output_value) {
-
   DAC.setDAC(CHAN_A, output_value);
-
   Serial.print("DAC output: ");
   Serial.print(output_value);
   Serial.println();
@@ -148,7 +146,14 @@ void readVoltage() {
   static uint16_t readings[VOLT_READ_COUNT] = {0};
 
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
-  // Serial.println(read);
+
+  /*
+    Serial.print(read);
+    if (read >= 4095) {
+      return;
+    }
+    //Serial.println();
+  */
 
   // Subtract the last reading
   voltageRunningTotal = voltageRunningTotal - readings[readingIndex];
@@ -166,28 +171,24 @@ void readVoltage() {
   }
 }
 
-uint16_t getVoltage() { 
-
-  Serial.print("voltage: ");
-  Serial.print(uint16_t(voltageRunningTotal / VOLT_READ_COUNT));
-  Serial.println();
-
-  return voltageRunningTotal / VOLT_READ_COUNT; 
-  
-  }
+uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
 
 uint16_t readChannelSE(uint8_t channel) {
+
+  delay(1); // Required
+
   /*
     Serial.print("Channel ");
     Serial.print(channel);
     Serial.print(": ");
   */
+
   // Start and SE bits always set (D2 is 'don't care' for MCP3302)
   uint8_t commandByte = 0x18;
 
   commandByte = commandByte + channel;
-  //  Serial.print("command af: 0b");
-  //  Serial.println(commandByte, BIN);
+
+  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
 
   digitalWrite(ADC_CS, LOW);
 
@@ -202,14 +203,12 @@ uint16_t readChannelSE(uint8_t channel) {
 
   digitalWrite(ADC_CS, HIGH);
 
+  SPI.endTransaction();
+
   uint16_t calculated = uint16_t((float)reading * (VREF / 4.096) + 0.5);
 
   calculated = calculated >> 1;
-  /*
-    Serial.print(" ");
-    Serial.println(calculated);
-    Serial.println();
-  */
+
   return calculated;
 }
 
