@@ -68,11 +68,11 @@ void handleCooling() {
       setFanState(true);
     }
     if (fanEnabled) {
-      if (getTemperature() >= 45) {
+      if (getTemperature() >= FAN_MAX_THRESHOLD) {
         setFanPWM(FAN_MAX_PWM);
-      } else if (getTemperature() >= 40) {
+      } else if (getTemperature() >= FAN_MED_THRESHOLD) {
         setFanPWM(FAN_MED_PWM);
-      } else if (getTemperature() >= 35) {
+      } else if (getTemperature() >= FAN_MIN_THRESHOLD) {
         setFanPWM(FAN_MIN_PWM);
       }
     }
@@ -101,9 +101,14 @@ uint16_t getFanRPM() { return fanRPM; }
 uint16_t getFanPWM() { return fanPWM; }
 
 void setFanPWM(uint16_t value) {
-  analogWrite(pinFanPWM, value);
-  Serial.print("New PWM: ");
-  Serial.println(value);
+  static uint16_t savedValue;
+
+  if (value != savedValue) {
+    analogWrite(pinFanPWM, value);
+    savedValue = value;
+    Serial.print("New PWM: ");
+    Serial.println(value);
+  }
 }
 
 void fanTachInterruptHandler() { tachPulseCount++; }

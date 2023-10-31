@@ -1,18 +1,17 @@
 /*
   Notes:
 
+    - 260-ish mA current draw full load
+
 
   Ideas:
+    
+    - Inhibit output enable until cooled down on overtemp
+    - OC alarm?
 
-    - Change fan tach routine to save last pulse and trigger if > timeout
-    - OC alarm if we get there
 
   Todo:
-      - Immediately display the underscore when we change digit set
-          - now it does, but it messes up with the blinking since
-            it's the same millis() stuff.
-      - Inhibit output enable until cooled down on overtemp
-      * Move timer stuff to a separate file
+
 */
 
 #include "control.h"
