@@ -31,6 +31,7 @@ void configureControls() {
   digitalWrite(pinEnableRelay, LOW);
   digitalWrite(pinRangeRelay, LOW);
 
+  /************************************************************/
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
 
   for (uint8_t x = 0; x < ANALOG_READ_COUNT; x++) {
@@ -67,10 +68,25 @@ void setOutputState(bool state) {
     setDAC(0);
     delay(RELAY_DELAY);
     digitalWrite(pinEnableRelay, OUTPUT_OFF);
-  } else {
+
+    // Clear current readings
+    for (uint8_t x = 0; x < ANALOG_READ_COUNT; x++) {
+      currentReadings[x] = 0;
+    }
+    currentRunningTotal = 0;
+
+  } //
+  else {
     digitalWrite(pinEnableRelay, OUTPUT_ON);
     delay(RELAY_DELAY);
     setCurrent(outputCurrent);
+    delay(10);
+
+    uint16_t read = readChannelSE(ADC_CURRENT_CHANNEL);
+    for (uint8_t x = 0; x < ANALOG_READ_COUNT; x++) {
+      currentReadings[x] = read;
+    }
+    currentRunningTotal = read * ANALOG_READ_COUNT;
   }
 
   outputEnabled = state;
