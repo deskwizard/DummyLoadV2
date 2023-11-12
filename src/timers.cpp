@@ -34,10 +34,11 @@ ISR(TIMER1_COMPA_vect) { //
 
   currentEncoderPosition = 0;
 
-  if (!digitalRead(pinEncoderA)) {
+  if (!bit_is_clear(ENC_PIN, ENC1_A)) {
     currentEncoderPosition |= (1 << 1);
   }
-  if (!digitalRead(pinEncoderB)) {
+
+  if (!bit_is_clear(ENC_PIN, ENC1_B)) {
     currentEncoderPosition |= (1 << 0);
   }
 
