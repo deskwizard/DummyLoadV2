@@ -195,13 +195,9 @@ void readCurrent() {
   }
 }
 //
-uint16_t getCurrent() {
-  if (getDisplayMode() == DISPLAY_MODE_SET) {
-    return outputCurrent;
-  } else {
-    return currentRunningTotal / ANALOG_READ_COUNT;
-  }
-}
+uint16_t getCurrent() { return outputCurrent; }
+
+uint16_t getOutputCurrent() { return currentRunningTotal / ANALOG_READ_COUNT; }
 
 uint16_t getMaxCurrent() {
   if (outputRange == RANGE_LOW) {

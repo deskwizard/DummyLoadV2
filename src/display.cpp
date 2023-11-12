@@ -114,13 +114,9 @@ void handleDisplay() {
     }
     // If the output is enabled and we're not in set mode.
     else if (displayMode == DISPLAY_MODE_VALUE && getOutputState() == true) {
-      uint16_t value = readChannelSE(ADC_CURRENT_CHANNEL);
-/*
-      Serial.print("Print value: ");
-      Serial.println(value);
-      Serial.println();
-*/
-      displayValue(DISPLAY_MAIN, value);
+
+      displayValue(DISPLAY_MAIN, getOutputCurrent());
+
     }
     // Otherwise we're in set mode.
     else if (displayMode == DISPLAY_MODE_SET) {

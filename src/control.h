@@ -35,13 +35,14 @@ void setAlarm(uint8_t alarmType);
 void clearAlarm();
 bool getAlarmFlag();
 void setCurrent(uint16_t current);
-void setDAC(uint16_t value);
 void readCurrent();
 uint16_t getCurrent();
+uint16_t getOutputCurrent();
 uint16_t getMaxCurrent();
 void readVoltage();
 uint16_t getVoltage();
 uint16_t readChannelSE(uint8_t channel);
+void setDAC(uint16_t value);
 void testDAC();
 
 #endif
