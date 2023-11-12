@@ -31,7 +31,15 @@ void configureControls() {
 
 void setOutputState(bool state) {
 
-  digitalWrite(pinEnableRelay, state);
+  if (state == OUTPUT_OFF) {
+    setDAC(0);
+    delay(RELAY_DELAY);
+    digitalWrite(pinEnableRelay, OUTPUT_OFF);
+  } else {
+    digitalWrite(pinEnableRelay, OUTPUT_ON);
+    delay(RELAY_DELAY);
+    setCurrent(outputCurrent);
+  }
 
   outputEnabled = state;
   displayValue(DISPLAY_MAIN, getCurrent());
