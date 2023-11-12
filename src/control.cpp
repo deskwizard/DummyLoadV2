@@ -175,7 +175,7 @@ uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
 
 uint16_t readChannelSE(uint8_t channel) {
 
-  delay(1); // Required
+  delay(10); // Required else the display fucks up
 
   /*
     Serial.print("Channel ");
