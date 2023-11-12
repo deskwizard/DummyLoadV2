@@ -33,8 +33,8 @@ void setup() {
   Serial.println("Hello");
   Serial.println();
 
+  configureControls(); // Needs to be initialized before the display
   configureDisplay();
-  configureControls();
   configureCooling();
   configureInputs();
   configureTimer();

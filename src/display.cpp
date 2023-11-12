@@ -27,7 +27,7 @@ void configureDisplay() {
   delay(500);
 
   displayValue(DISPLAY_MAIN, getCurrent());
-  displayValue(DISPLAY_AUX, 0);
+  displayValue(DISPLAY_AUX, getVoltage());
 }
 
 void displayDashes() {

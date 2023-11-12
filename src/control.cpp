@@ -11,7 +11,9 @@ bool outputEnabled = false;
 bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
 
+uint16_t voltageReadings[ANALOG_READ_COUNT];
 uint64_t voltageRunningTotal = 0;
+uint16_t currentReadings[ANALOG_READ_COUNT];
 uint64_t currentRunningTotal = 0;
 
 void configureControls() {
@@ -28,6 +30,14 @@ void configureControls() {
   pinMode(pinRangeRelay, OUTPUT);
   digitalWrite(pinEnableRelay, LOW);
   digitalWrite(pinRangeRelay, LOW);
+
+  uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
+
+  for (uint8_t x = 0; x < ANALOG_READ_COUNT; x++) {
+    voltageReadings[x] = read;
+  }
+
+  voltageRunningTotal = read * ANALOG_READ_COUNT;
 }
 
 void handleAnalog() {
@@ -166,17 +176,15 @@ void readCurrent() {
 
   static uint8_t readingIndex = 0; // Index of the current reading
 
-  static uint16_t readings[ANALOG_READ_COUNT] = {0};
-
   uint16_t read = readChannelSE(ADC_CURRENT_CHANNEL);
 
   // Subtract the last reading
-  currentRunningTotal = currentRunningTotal - readings[readingIndex];
+  currentRunningTotal = currentRunningTotal - currentReadings[readingIndex];
 
-  readings[readingIndex] = read; // Read from the sensor
+  currentReadings[readingIndex] = read; // Read from the sensor
 
   // Add the reading to the running total
-  currentRunningTotal = currentRunningTotal + readings[readingIndex];
+  currentRunningTotal = currentRunningTotal + currentReadings[readingIndex];
 
   readingIndex++; // Advance to the next position in the array
 
@@ -205,17 +213,15 @@ void readVoltage() {
 
   static uint8_t readingIndex = 0; // Index of the current reading
 
-  static uint16_t readings[ANALOG_READ_COUNT] = {0};
-
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
 
   // Subtract the last reading
-  voltageRunningTotal = voltageRunningTotal - readings[readingIndex];
+  voltageRunningTotal = voltageRunningTotal - voltageReadings[readingIndex];
 
-  readings[readingIndex] = read; // Read from the sensor
+  voltageReadings[readingIndex] = read; // Read from the sensor
 
   // Add the reading to the running total
-  voltageRunningTotal = voltageRunningTotal + readings[readingIndex];
+  voltageRunningTotal = voltageRunningTotal + voltageReadings[readingIndex];
 
   readingIndex++; // Advance to the next position in the array
 
