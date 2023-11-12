@@ -12,7 +12,8 @@
 #define ADC_VOLTAGE_CHANNEL 2
 #define ADC_CURRENT_CHANNEL 3
 
-#define VOLT_READ_COUNT 20
+#define ANALOG_READ_COUNT 10
+#define ANALOG_READ_TIME 50
 
 #define OUTPUT_ON HIGH
 #define OUTPUT_OFF LOW
@@ -25,6 +26,7 @@
 #define ALARM_OVER_CURRENT 2
 
 void configureControls();
+void handleAnalog();
 void setOutputState(bool state);
 bool getOutputState();
 void setOutputRange(bool value);
@@ -34,6 +36,7 @@ void clearAlarm();
 bool getAlarmFlag();
 void setCurrent(uint16_t current);
 void setDAC(uint16_t value);
+void readCurrent();
 uint16_t getCurrent();
 uint16_t getMaxCurrent();
 void readVoltage();

@@ -12,6 +12,7 @@ bool outputRange = LOW;
 bool alarmTriggeredFlag = false;
 
 uint64_t voltageRunningTotal = 0;
+uint64_t currentRunningTotal = 0;
 
 void configureControls() {
 
@@ -28,6 +29,29 @@ void configureControls() {
   digitalWrite(pinEnableRelay, LOW);
   digitalWrite(pinRangeRelay, LOW);
 }
+
+void handleAnalog() {
+
+  uint32_t currentMillis = millis();
+  static uint32_t previousMillis = millis() - ANALOG_READ_TIME;
+
+  if ((uint32_t)(currentMillis - previousMillis) >= ANALOG_READ_TIME) {
+
+    // readCurrent();
+
+    if (getOutputState() == OUTPUT_ON &&
+        getDisplayMode() == DISPLAY_MODE_VALUE) {
+      readCurrent();
+    }
+
+    readVoltage();
+
+    previousMillis = currentMillis;
+  }
+}
+
+//
+/*************************** OUTPUT ***************************/
 
 void setOutputState(bool state) {
 
@@ -49,6 +73,9 @@ void setOutputState(bool state) {
 }
 
 bool getOutputState() { return outputEnabled; }
+
+//
+/*************************** RANGE ***************************/
 
 void setOutputRange(bool state) {
 
@@ -76,6 +103,9 @@ void setOutputRange(bool state) {
 }
 
 bool getOutputRange() { return outputRange; }
+
+//
+/*************************** ALARMS ***************************/
 
 void setAlarm(uint8_t alarmType) {
   alarmTriggeredFlag = true;
@@ -107,6 +137,9 @@ void clearAlarm() {
 
 bool getAlarmFlag() { return alarmTriggeredFlag; }
 
+//
+/*************************** CURRENT ***************************/
+
 void setCurrent(uint16_t current) {
 
   outputCurrent = current;
@@ -130,14 +163,45 @@ void setCurrent(uint16_t current) {
   Serial.println();
 }
 
-void setDAC(uint16_t output_value) {
-  DAC.setDAC(CHAN_A, output_value);
-  Serial.print("DAC output: ");
-  Serial.print(output_value);
-  Serial.println();
-}
+void readCurrent() {
 
-uint16_t getCurrent() { return outputCurrent; }
+  static uint8_t readingIndex = 0; // Index of the current reading
+
+  static uint16_t readings[ANALOG_READ_COUNT] = {0};
+
+  uint16_t read = readChannelSE(ADC_CURRENT_CHANNEL);
+
+  /*
+    Serial.print(read);
+    if (read >= 4095) {
+      return;
+    }
+    //Serial.println();
+  */
+
+  // Subtract the last reading
+  currentRunningTotal = currentRunningTotal - readings[readingIndex];
+
+  readings[readingIndex] = read; // Read from the sensor
+
+  // Add the reading to the running total
+  currentRunningTotal = currentRunningTotal + readings[readingIndex];
+
+  readingIndex++; // Advance to the next position in the array
+
+  // If we're at the end of the array, wrap around to the beginning
+  if (readingIndex >= ANALOG_READ_COUNT) {
+    readingIndex = 0;
+  }
+}
+//
+uint16_t getCurrent() {
+  if (getDisplayMode() == DISPLAY_MODE_SET) {
+    return outputCurrent;
+  } else {
+    return currentRunningTotal / ANALOG_READ_COUNT;
+  }
+}
 
 uint16_t getMaxCurrent() {
   if (outputRange == RANGE_LOW) {
@@ -147,11 +211,14 @@ uint16_t getMaxCurrent() {
   }
 }
 
+//
+/*************************** VOLTAGE ***************************/
+
 void readVoltage() {
 
   static uint8_t readingIndex = 0; // Index of the current reading
 
-  static uint16_t readings[VOLT_READ_COUNT] = {0};
+  static uint16_t readings[ANALOG_READ_COUNT] = {0};
 
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
 
@@ -174,12 +241,15 @@ void readVoltage() {
   readingIndex++; // Advance to the next position in the array
 
   // If we're at the end of the array, wrap around to the beginning
-  if (readingIndex >= VOLT_READ_COUNT) {
+  if (readingIndex >= ANALOG_READ_COUNT) {
     readingIndex = 0;
   }
 }
 
-uint16_t getVoltage() { return voltageRunningTotal / VOLT_READ_COUNT; }
+uint16_t getVoltage() { return voltageRunningTotal / ANALOG_READ_COUNT; }
+
+//
+/*************************** ADC / DAC***************************/
 
 uint16_t readChannelSE(uint8_t channel) {
 
@@ -218,6 +288,13 @@ uint16_t readChannelSE(uint8_t channel) {
   calculated = calculated >> 1;
 
   return calculated;
+}
+
+void setDAC(uint16_t output_value) {
+  DAC.setDAC(CHAN_A, output_value);
+  Serial.print("DAC output: ");
+  Serial.print(output_value);
+  Serial.println();
 }
 
 void testDAC() {

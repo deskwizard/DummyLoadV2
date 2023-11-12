@@ -34,7 +34,8 @@ void handleTimers() {
 
   if (timerNeedHandling == true) {
 
-    readVoltage();
+/*     readCurrent();
+    readVoltage(); */
     readNTC();
 
     currentEncoderPosition = 0;

@@ -5,7 +5,7 @@
 
 
   Ideas:
-    
+
     - Inhibit output enable until cooled down on overtemp
     - OC alarm?
 
@@ -38,13 +38,12 @@ void setup() {
   configureCooling();
   configureInputs();
   configureTimer();
-  
 }
 
 void loop() {
-
   handleCooling();
   handleInputs();
+  handleAnalog();
   handleDisplay();
   handleSerialInput();
   handleTimers();
