@@ -82,7 +82,6 @@ void setDisplayMode(bool mode) {
 bool getDisplayMode() { return displayMode; }
 
 void selectSetDigit(uint8_t digit) {
-  // Todo: reset the display update thing here?
   selectedDigit = digit;
   displayValue(DISPLAY_MAIN, getCurrent());
   Serial.print("selected digit: ");

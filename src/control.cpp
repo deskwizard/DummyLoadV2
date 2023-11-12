@@ -37,8 +37,6 @@ void handleAnalog() {
 
   if ((uint32_t)(currentMillis - previousMillis) >= ANALOG_READ_TIME) {
 
-    // readCurrent();
-
     if (getOutputState() == OUTPUT_ON &&
         getDisplayMode() == DISPLAY_MODE_VALUE) {
       readCurrent();
@@ -108,6 +106,7 @@ bool getOutputRange() { return outputRange; }
 /*************************** ALARMS ***************************/
 
 void setAlarm(uint8_t alarmType) {
+
   alarmTriggeredFlag = true;
 
   // No matter what, turn output off, set fan to maximum speed
@@ -171,14 +170,6 @@ void readCurrent() {
 
   uint16_t read = readChannelSE(ADC_CURRENT_CHANNEL);
 
-  /*
-    Serial.print(read);
-    if (read >= 4095) {
-      return;
-    }
-    //Serial.println();
-  */
-
   // Subtract the last reading
   currentRunningTotal = currentRunningTotal - readings[readingIndex];
 
@@ -194,7 +185,7 @@ void readCurrent() {
     readingIndex = 0;
   }
 }
-//
+
 uint16_t getCurrent() { return outputCurrent; }
 
 uint16_t getOutputCurrent() { return currentRunningTotal / ANALOG_READ_COUNT; }
@@ -217,14 +208,6 @@ void readVoltage() {
   static uint16_t readings[ANALOG_READ_COUNT] = {0};
 
   uint16_t read = readChannelSE(ADC_VOLTAGE_CHANNEL);
-
-  /*
-    Serial.print(read);
-    if (read >= 4095) {
-      return;
-    }
-    //Serial.println();
-  */
 
   // Subtract the last reading
   voltageRunningTotal = voltageRunningTotal - readings[readingIndex];

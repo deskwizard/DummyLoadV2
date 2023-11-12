@@ -3,7 +3,7 @@
 
 #include "defines.h"
 
-#define RELAY_DELAY 100 //in ms
+#define RELAY_DELAY 100 // in ms
 
 #define VREF 4.098f
 

@@ -51,22 +51,7 @@ void handleTimers() {
 
   if (timerNeedHandling == true) {
 
-    /*     readCurrent();
-        readVoltage(); */
     readNTC();
-
-    /*     currentEncoderPosition = 0;
-
-        if (!digitalRead(pinEncoderA)) {
-          currentEncoderPosition |= (1 << 1);
-        }
-        if (!digitalRead(pinEncoderB)) {
-          currentEncoderPosition |= (1 << 0);
-        }
-
-        encoderSwitchState = digitalRead(pinEncoderSwitch);
-        enableSwitchState = digitalRead(pinOutputEnableSwitch);
-        rangeSwitchState = digitalRead(pinRangeSwitch); */
 
     timerNeedHandling = false;
   }

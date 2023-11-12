@@ -42,7 +42,6 @@ void configureInputs() {
 
   encoderSwitchState = digitalRead(pinEncoderSwitch);
   encoderSwitchLastState = encoderSwitchState;
-
 }
 
 void handleInputs() {
@@ -122,7 +121,6 @@ void handleInputs() {
         } else {
           counter = 3;
           selectSetDigit(counter);
-          // setDisplayMode(DISPLAY_MODE_VALUE);
         }
       }
     }
