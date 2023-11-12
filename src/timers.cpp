@@ -28,28 +28,44 @@ void configureTimer() {
   sei(); // Enable interrupts
 }
 
-ISR(TIMER1_COMPA_vect) { timerNeedHandling = true; }
+ISR(TIMER1_COMPA_vect) { //
+
+  timerNeedHandling = true;
+
+  currentEncoderPosition = 0;
+
+  if (!digitalRead(pinEncoderA)) {
+    currentEncoderPosition |= (1 << 1);
+  }
+  if (!digitalRead(pinEncoderB)) {
+    currentEncoderPosition |= (1 << 0);
+  }
+
+  encoderSwitchState = digitalRead(pinEncoderSwitch);
+  enableSwitchState = digitalRead(pinOutputEnableSwitch);
+  rangeSwitchState = digitalRead(pinRangeSwitch);
+}
 
 void handleTimers() {
 
   if (timerNeedHandling == true) {
 
-/*     readCurrent();
-    readVoltage(); */
+    /*     readCurrent();
+        readVoltage(); */
     readNTC();
 
-    currentEncoderPosition = 0;
+    /*     currentEncoderPosition = 0;
 
-    if (!digitalRead(pinEncoderA)) {
-      currentEncoderPosition |= (1 << 1);
-    }
-    if (!digitalRead(pinEncoderB)) {
-      currentEncoderPosition |= (1 << 0);
-    }
+        if (!digitalRead(pinEncoderA)) {
+          currentEncoderPosition |= (1 << 1);
+        }
+        if (!digitalRead(pinEncoderB)) {
+          currentEncoderPosition |= (1 << 0);
+        }
 
-    encoderSwitchState = digitalRead(pinEncoderSwitch);
-    enableSwitchState = digitalRead(pinOutputEnableSwitch);
-    rangeSwitchState = digitalRead(pinRangeSwitch);
+        encoderSwitchState = digitalRead(pinEncoderSwitch);
+        enableSwitchState = digitalRead(pinOutputEnableSwitch);
+        rangeSwitchState = digitalRead(pinRangeSwitch); */
 
     timerNeedHandling = false;
   }

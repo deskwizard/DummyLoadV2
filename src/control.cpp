@@ -147,7 +147,7 @@ void setCurrent(uint16_t current) {
   // I could make that calculation in one line, but it'll take me
   // ages to figure it out if I ever have to look at this again.
   float value = (float(current) + 0.5) / 1000.0;
-  uint16_t outputCode = uint16_t((value / VREF) * 4095.0);
+  uint16_t outputCode = uint16_t((value / VREF) * 4096.0);
 
   if (outputRange == RANGE_LOW) {
     outputCode = outputCode * 10;
@@ -314,7 +314,7 @@ void testDAC() {
     Serial.print("A: ");
     Serial.print(out_a);
     Serial.print(" ");
-    Serial.println(float(4096 / (VREF * 1000)) + 1 * out_a);
+    Serial.println(float(4096.0 / (VREF * 1000)) + 1 * out_a);
 
     if (out_b < 4095) {
       out_b = out_b + 25;
